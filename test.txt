@@ -1,0 +1,32 @@
+programa foreveralone;
+var
+    int i, j, p;
+    int Arreglo[10] , OtroArreglo[10] ;
+    float valor;
+
+funcion int fact (int j)
+var 
+    int i;
+    {i = j + (p-j*2+j) ; 
+    si (j== 1) entonces
+        { regresa ( j ); }
+         sino 
+         { regresa (j*fact(j-1)); }
+    }
+
+principal ( ) 
+{ 
+    inicia(p * j - 5) ;
+    desde i=0 hasta 9 hacer 
+        { Arreglo [ i ]= Arreglo [ i ] * fact (Arreglo [ i ] - p); ; }
+    desde i=0 hasta 9 hacer 
+        { OtroArreglo [ i ] = Arreglo [ i ] - p; }
+    mientras ( i >= 0) haz
+        { escribe ("resultado", Arreglo [ i ] , fact ( i + 2) * valor ) ;
+            i = i - 1;
+         } 
+    mientras (i < 10) haz
+        { escribe ("Otros datos" , OtroArreglo [ i ] , p, i + OtroArreglo[i] ) ;
+            i = i + 1;
+        }
+} 
