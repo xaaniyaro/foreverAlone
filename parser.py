@@ -7,21 +7,32 @@ import collections
 import stack
 import interpreter
 
-tablaFunciones = {}
-funcCounter = 1
-firstVars = []
-pilaOpd = stack.Stack()
-pilaTipos = stack.Stack()
-pilaOpr = stack.Stack()
-tempResult = 0
-pilaQuads = stack.Stack()
+tablaFunciones = {}         #diccionario de funciones
+funcCounter = 1             #contador de funciones
+firstVars = []              #lista para primeras variables
+pilaOpd = stack.Stack()     #pila de operandos
+pilaTipos = stack.Stack()   #pila de tipos
+pilaOpr = stack.Stack()     #pila de operadores
+tempResult = 0              #contador de cuadruplos
+pilaQuads = stack.Stack()   #pila de cuadruplos
+pilaSaltos = stack.Stack()  #pila de saltos
+currFuncID = stack.Stack()
+parameterCounter = 1
+pilaParams = stack.Stack()
+semanticCube = interpreter.operations
 
 class quad:
-    def __init__(self, operator, leftOperand, rightOperand, result):
-        self.operator = operator
+    def __init__(self, label, leftOperand, rightOperand, result):
+        self.label = label
         self.leftOperand = leftOperand
         self.rightOperand = rightOperand
         self.result = result
+    
+    def fill(self, content):
+        if self.result == None:
+            self.result = content
+        else:
+            print("Hubo un problema rellenando un cuadruplo con etiqueta: " + self.label)
 
 class funcion:
     def __init__(self, name, functype, params, vars):
@@ -29,6 +40,19 @@ class funcion:
         self.functype = functype
         self.params = params
         self.vars = vars
+
+def searchFunc(funcName):
+    global funcCounter, tablaFunciones
+    for i in range (1, funcCounter):
+        if tablaFunciones[i].name == funcName:
+            return True
+    return False
+
+def getParams(funcName):
+    global funcCounter, tablaFunciones
+    for i in range (1, funcCounter):
+        if tablaFunciones[i].name == funcName:
+            return tablaFunciones[i].params
 
 def checkDuplicateVars(varList):
     flag = False
@@ -104,8 +128,8 @@ def p_error(p):
 ##### PROGRAMA
 
 def p_programa(p):
-    'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main'
-    #'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks'
+    #'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main'
+    'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks'
 
 def p_createTable(p):
     'createTable : empty'
@@ -209,19 +233,28 @@ def p_bloque1(p):
 
 ##### ESTATUTO
 
+#changed this 
+
 def p_estatuto(p):
     '''estatuto : asig
                 | cond
                 | retorno
                 | lectura
                 | escritura
-                | llamada
+                | llamada SEMICOLON
                 | repeticion'''
 
 ##### ASIG
 
 def p_asig(p):
     'asig : variable EQUAL exp SEMICOLON'
+    global pilaQuads, tempResult, pilaOpd
+    opd = pilaOpd.pop()
+    opd_type = pilaTipos.pop()
+    var = p[1] #revisar que regresa 'variable', si se puede obtener el tipo
+    if interpreter.operations['='][(opd_type,var)] != 'err':
+        gen = quad('=',opd, None, var)
+        pilaQuads.push(gen)
 
 ##### MAIN
 
@@ -250,24 +283,87 @@ def p_params(p):
 
 def p_retorno(p):
     'retorno : REGRESA LPAREN exp RPAREN SEMICOLON'
+    global pilaQuads, tempResult
+    gen = quad('RETURN',None,None,p[3])
+    #tempResult += 1
 
 ###### LLAMADA
 
 def p_llamada(p):
-    '''llamada : ID LPAREN exp llamada2 RPAREN llama'''
+    '''llamada : llamadaSearch LPAREN prepEra llamada2 llamaVer RPAREN llamaEnd
+                | llamadaSearch LPAREN prepEra RPAREN llamaEnd'''    
+
+def p_llamadaSearch(p):
+    ' llamadaSearch : ID'
+    if not searchFunc(p[1]):
+        print("Function" + p[1] + "not defined")
+        exit()
+    else:
+        currFuncID.push(p[1])
+
+def p_prepEra(p):
+    'prepEra : empty'
+    global tablaFunciones, pilaQuads, currFuncID, pilaParams
+    funcID = currFuncID.peek()
+    gen = quad('ERA', None, None, funcID) #como definir la size
+    pilaQuads.push(gen)
+    tempResult += 1
+    params = getParams(funcID)
+    if len(params) > 1:
+        pilaParams.push(params)
 
 def p_llamada2(p):
-    '''llamada2 : COMMA exp llamada2
-                | empty'''
+    '''llamada2 : exp COMMA llamada2
+                | exp'''
+    global pilaOpd, pilaTipos, pilaQuads
+    if len(p) > 2:
+        argument = pilaOpd.pop()
+        argument_type = pilaTipos.pop()
+         #checar esto, sigue siendo confuso
+        if pilaParams.peek()[parameterCounter][0] != argument_type:
+            print("Parameter error")
+            exit()
+        else:
+            arg = 'Argument #' + str(parameterCounter)
+            gen = quad('PARAMETER', argument, None, arg)
+            pilaQuads.push(gen)
+            tempResult += 1
+            parameterCounter += 1
+    else:
+        currP = pilaParams.pop()
+        if len(currP) != 1:
+            print("Parameter error with size")
+            exit()
+        else:
+            arg = 'Argument #' + str(1)
+            gen = quad('PARAMETER', argument, None, arg)
+            pilaQuads.push(gen)
+            tempResult += 1
 
-def p_llama(p):
-    '''llama : SEMICOLON
-            | empty'''
+def p_llamaVer(p):
+    'llamaVer : empty'
+    global pilaParams, parameterCounter
+    currP = pilaParams.pop()
+    if parameterCounter != len(currP):
+        print("Parameter number do not match")
+        exit()
+    else:
+        parameterCounter = 1
+
+def p_llamaEnd(p):
+    'llamaEnd: empty'
+    global pilaQuads, tempResult, currFuncID
+    gen = quad('GOSUB',currFuncID.pop(),None,'initialAdress') #rellenar 4to con un numero
+    tempResult += 1
 
 ##### LECTURA
 
 def p_lectura(p):
     'lectura : LEE LPAREN variable RPAREN SEMICOLON'
+    global pilaQuads, tempResult
+    gen = quad('INPUT', None, None, p[3]) #revisar que revisa 'variable'
+    pilaQuads.push(gen)
+    tempResult += 1
 
 ##### ESCRITURA
 
@@ -277,20 +373,55 @@ def p_escritura(p):
 def p_escritura1(p):
     '''escritura1 : CTES
                 | exp'''
+    p[0] = p[1] #revisar que regresa exp
 
 def p_escritura2_a(p):
     '''escritura2 : COMMA escritura1 escritura2
-                | empty'''
+                | escritura1'''
+    global pilaQuads, tempResult
+    if len(p) > 4:
+        gen = quad('PRINT', None, None, p[2])
+        pilaQuads.push(gen)
+        #tempResult += 1
 
 
 ##### CONDICION
 
 def p_cond(p):
-    'cond : SI LPAREN exp RPAREN ENTONCES bloque condicion1'
+    'cond : SI LPAREN exp RPAREN cond1 ENTONCES bloque condicion1 cond2'
+
+def p_cond1(p):
+    'cond1 : empty'
+    global pilaTipos, pilaOpd, pilaSaltos, tempResult
+    exp_type = pilaTipos.pop()
+    if exp_type != 'bool':
+        print("ERROR: Type mismatch")
+    else:
+        result = pilaOpd.pop()
+        gen = quad('GOTOF',result,None,None)
+        pilaQuads.push(gen)
+        tempResult += 1
+        pilaSaltos.push(tempResult-1)
+
+def p_cond2(p):
+    'cond2 : empty'
+    global pilaSaltos, tempResult
+    end = pilaSaltos.pop()
+    pilaQuads.members[end].fill(tempResult)
 
 def p_condicion1(p):
-    '''condicion1 : SINO bloque
-                | empty'''
+    '''condicion1 : elseActions SINO bloque
+                | empty'''  
+
+def p_elseActions(p):
+    'elseActions : empty'
+    global pilaQuads, tempResult
+    gen = quad('GOTO', None,None,None)
+    pilaQuads.push(gen)
+    tempResult += 1
+    false = pilaSaltos.pop()
+    pilaSaltos.push(tempResult-1)
+    pilaQuads.members[false].fill(tempResult)
 
 ##### REPETICION
 
@@ -301,13 +432,42 @@ def p_repeticion(p):
 ###### CONDICIONAL
 
 def p_condicional(p):
-    'condicional : MIENTRAS LPAREN exp RPAREN HAZ bloque'
+    'condicional : MIENTRAS regWhile LPAREN exp RPAREN whileCond HAZ bloque endWhile'
+
+def p_regWhile(p):
+    'regWhile : empty'
+    global pilaSaltos, tempResult
+    pilaSaltos.push(tempResult)
+
+def p_whileCond(p):
+    'whileCond : empty'
+    global pilaTipos, pilaOpd, pilaQuads, pilaSaltos, tempResult
+    exp_type = pilaTipos.pop()
+    if exp_type != 'bool':
+        print("TYPE MISTACH")
+    else:
+        result = pilaOpd.pop()
+        gen = quad('GOTOF', result, None, None)
+        pilaQuads.push(gen)
+        tempResult += 1
+        pilaSaltos.push(tempResult-1)
+
+def p_endWhile(p):
+    'endWhile: empty'
+    global pilaSaltos, tempResult, pilaQuads
+    end = pilaSaltos.pop()
+    regresa = pilaSaltos.pop()
+    gen = quad('GOTO',None, None, regresa)
+    pilaQuads.members[end].fill(tempResult)
+    pilaQuads.push(gen)
+    tempResult += 1
 
 ###### NOCONDICIONAL
 
 def p_nocondicional(p):
     '''nocondicional : DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque
                     | DESDE ID EQUAL CTEI HASTA CTEI HACER bloque'''
+    
 
 ##### EXP
 
@@ -358,25 +518,27 @@ def p_exp2(p):
 
 def p_mexp(p):
     'mexp : termino mexp1'
-    global pilaOpr, tempResult, pilaQuads
-    if pilaOpr.peek() == '+' or pilaOpr.peek() == '-':
-        rOpd = pilaOpd.pop()
-        rType = pilaTipos.pop()
-        lOpd = pilaOpd.pop()
-        lType = pilaTipos.pop()
-        operator = pilaOpr.pop()
-        resultType = interpreter.operations[operator,(lType,rType)]
-        if(resultType != 'err'):
-            tempResult = tempResult + 1
-            quadObj = quad(operator, lOpd, rOpd, tempResult)
-            pilaQuads(quadObj)
-            pilaOpd.push(tempResult)
-            pilaTipos.push(resultType)
-            if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
-                tempResult = tempResult - 1
-    else:
-        print("TYPE MISMATCH")
-        exit()
+    global pilaOpr, pilaOpd, tempResult, pilaTipos, tempResult, pilaQuads
+    if pilaOpr.items != []:
+        if pilaOpr.peek() == '+' or pilaOpr.peek() == '-':
+            rOpd = pilaOpd.pop()
+            rType = pilaTipos.pop()
+            lOpd = pilaOpd.pop()
+            lType = pilaTipos.pop()
+            operator = pilaOpr.pop()
+            resultType = interpreter.operations[operator][(lType,rType)]
+            #print((lType, rType, resultType))
+            if(resultType != 'err'):
+                tempResult = tempResult + 1
+                quadObj = quad(operator, lOpd, rOpd, tempResult)
+                pilaQuads.push(quadObj)
+                pilaOpd.push(tempResult)
+                pilaTipos.push(resultType)
+                #if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
+                #    tempResult = tempResult - 1
+            else:
+                print("TYPE MISMATCH")
+                exit()
 
 
 def p_mexp1(p):
@@ -395,25 +557,26 @@ def p_mexp2(p):
 
 def p_termino(p):
     'termino : factor termino1'
-    global pilaOpr, tempResult, pilaQuads
-    if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
-        rOpd = pilaOpd.pop()
-        rType = pilaTipos.pop()
-        lOpd = pilaOpd.pop()
-        lType = pilaTipos.pop()
-        operator = pilaOpr.pop()
-        resultType = interpreter.operations[operator,(lType,rType)]
-        if(resultType != 'err'):
-            tempResult = tempResult + 1
-            quadObj = quad(operator, lOpd, rOpd, tempResult)
-            pilaQuads(quadObj)
-            pilaOpd.push(tempResult)
-            pilaTipos.push(resultType)
-            if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
-                tempResult = tempResult - 1
-    else:
-        print("TYPE MISMATCH")
-        exit()
+    global pilaOpr, pilaOpd, tempResult, pilaTipos, tempResult, pilaQuads
+    if pilaOpr.items != []:
+        if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
+            rOpd = pilaOpd.pop()
+            rType = pilaTipos.pop()
+            lOpd = pilaOpd.pop()
+            lType = pilaTipos.pop()
+            operator = pilaOpr.pop()
+            resultType = interpreter.operations[operator][(lType,rType)]
+            if(resultType != 'err'):
+                tempResult = tempResult + 1
+                quadObj = quad(operator, lOpd, rOpd, tempResult)
+                pilaQuads.push(quadObj)
+                pilaOpd.push(tempResult)
+                pilaTipos.push(resultType)
+                #if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
+                #    tempResult = tempResult - 1
+            else:
+                print("TYPE MISMATCH")
+                exit()
 
 def p_termino1(p):
     '''termino1 : TIMES factor termino1
@@ -468,8 +631,16 @@ def p_varcte(p):
                 | CTEC '''
     p[0] = p[1]
 
-'''def p_showstacks(p):
+#Para mostrar lo que se ha guardado en los stacks al correrse todo el parser
+ 
+def p_showstacks(p):
     'showstacks : empty'
+    global pilaQuads
+    print("Pila quads")
+    while pilaQuads.is_empty() != True:
+        q = pilaQuads.pop()
+        print((q.operator,q.leftOperand,q.rightOperand,q.result))
+    '''
     global pilaOpd, pilaOpr, pilaTipos
     
     print("Pila operandos")
@@ -483,6 +654,9 @@ def p_varcte(p):
     print("Pila tipos")
     while pilaTipos.is_empty() != True:
         print(pilaTipos.pop())'''
+
+
+
 
 #def p_printfuncs(p):
 #    'printfuncs : empty'

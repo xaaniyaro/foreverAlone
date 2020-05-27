@@ -1,0 +1,3075 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> programa
+Rule 1     empty -> <empty>
+Rule 2     programa -> PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks
+Rule 3     createTable -> empty
+Rule 4     vars -> VAR var2
+Rule 5     vars -> empty
+Rule 6     var1 -> tipo lista_ids SEMICOLON
+Rule 7     var2 -> var1 var2
+Rule 8     var2 -> var1
+Rule 9     var_decl -> ID
+Rule 10    var_decl -> ID LBRACKET CTEI RBRACKET
+Rule 11    var_decl -> ID LBRACKET exp RBRACKET
+Rule 12    lista_ids -> lista_ids COMMA var_decl
+Rule 13    lista_ids -> var_decl
+Rule 14    tipo -> INT
+Rule 15    tipo -> FLOAT
+Rule 16    tipo -> CHAR
+Rule 17    func_declarations -> func_decl func_declarations
+Rule 18    func_declarations -> empty
+Rule 19    func_decl -> FUNCION func2 ID LPAREN params RPAREN vars bloque
+Rule 20    func2 -> tipo
+Rule 21    func2 -> VOID
+Rule 22    bloque -> LCURLY bloque1 RCURLY
+Rule 23    bloque1 -> estatuto bloque1
+Rule 24    bloque1 -> empty
+Rule 25    estatuto -> asig
+Rule 26    estatuto -> cond
+Rule 27    estatuto -> retorno
+Rule 28    estatuto -> lectura
+Rule 29    estatuto -> escritura
+Rule 30    estatuto -> llamada
+Rule 31    estatuto -> repeticion
+Rule 32    asig -> variable EQUAL exp SEMICOLON
+Rule 33    main -> PRINCIPAL LPAREN RPAREN bloque
+Rule 34    param_decl -> tipo ID
+Rule 35    params -> params COMMA param_decl
+Rule 36    params -> param_decl
+Rule 37    retorno -> REGRESA LPAREN exp RPAREN SEMICOLON
+Rule 38    llamada -> ID LPAREN exp llamada2 RPAREN llama
+Rule 39    llamada2 -> COMMA exp llamada2
+Rule 40    llamada2 -> empty
+Rule 41    llama -> SEMICOLON
+Rule 42    llama -> empty
+Rule 43    lectura -> LEE LPAREN variable RPAREN SEMICOLON
+Rule 44    escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON
+Rule 45    escritura1 -> CTES
+Rule 46    escritura1 -> exp
+Rule 47    escritura2 -> COMMA escritura1 escritura2
+Rule 48    escritura2 -> empty
+Rule 49    cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1
+Rule 50    condicion1 -> SINO bloque
+Rule 51    condicion1 -> empty
+Rule 52    repeticion -> condicional
+Rule 53    repeticion -> nocondicional
+Rule 54    condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque
+Rule 55    nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque
+Rule 56    nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque
+Rule 57    exp -> texp exp1
+Rule 58    exp1 -> OR texp exp1
+Rule 59    exp1 -> empty
+Rule 60    texp -> gexp texp1
+Rule 61    texp1 -> AND gexp texp1
+Rule 62    texp1 -> empty
+Rule 63    gexp -> mexp gexp1
+Rule 64    gexp1 -> gexp2 mexp gexp1
+Rule 65    gexp1 -> empty
+Rule 66    gexp2 -> LESS
+Rule 67    gexp2 -> LESSO
+Rule 68    gexp2 -> GREATER
+Rule 69    gexp2 -> GREATERO
+Rule 70    gexp2 -> NOTEQUAL
+Rule 71    gexp2 -> EQUALS
+Rule 72    mexp -> termino mexp1
+Rule 73    mexp1 -> mexp2 termino mexp1
+Rule 74    mexp1 -> empty
+Rule 75    mexp2 -> PLUS
+Rule 76    mexp2 -> MINUS
+Rule 77    termino -> factor termino1
+Rule 78    termino1 -> TIMES factor termino1
+Rule 79    termino1 -> DIVIDE factor termino1
+Rule 80    termino1 -> empty
+Rule 81    factor -> LPAREN exp RPAREN
+Rule 82    factor -> varcte
+Rule 83    factor -> variable
+Rule 84    factor -> llamada
+Rule 85    variable -> ID dimension
+Rule 86    dimension -> LBRACKET exp RBRACKET
+Rule 87    dimension -> empty
+Rule 88    varcte -> CTEI
+Rule 89    varcte -> CTEF
+Rule 90    varcte -> CTEC
+Rule 91    showstacks -> empty
+
+Terminals, with rules where they appear
+
+AND                  : 61
+CHAR                 : 16
+COMMA                : 12 35 39 47
+CTEC                 : 90
+CTEF                 : 89
+CTEI                 : 10 55 55 56 56 88
+CTES                 : 45
+DESDE                : 55 56
+DIVIDE               : 79
+ENTONCES             : 49
+EQUAL                : 32 55 56
+EQUALS               : 71
+ESCRIBE              : 44
+FLOAT                : 15
+FUNCION              : 19
+GREATER              : 68
+GREATERO             : 69
+HACER                : 55 56
+HASTA                : 55 56
+HAZ                  : 54
+ID                   : 2 9 10 11 19 34 38 55 56 85
+INT                  : 14
+LBRACKET             : 10 11 86
+LCURLY               : 22
+LEE                  : 43
+LESS                 : 66
+LESSO                : 67
+LPAREN               : 19 33 37 38 43 44 49 54 81
+MIENTRAS             : 54
+MINUS                : 76
+NOTEQUAL             : 70
+OR                   : 58
+PLUS                 : 75
+PRINCIPAL            : 33
+PROGRAMA             : 2
+RBRACKET             : 10 11 86
+RCURLY               : 22
+REGRESA              : 37
+RPAREN               : 19 33 37 38 43 44 49 54 81
+SEMICOLON            : 2 6 32 37 41 43 44
+SI                   : 49
+SINO                 : 50
+TIMES                : 78
+VAR                  : 4
+VOID                 : 21
+error                : 
+
+Nonterminals, with rules where they appear
+
+asig                 : 25
+bloque               : 19 33 49 50 54 55 56
+bloque1              : 22 23
+cond                 : 26
+condicion1           : 49
+condicional          : 52
+createTable          : 2
+dimension            : 55 85
+empty                : 3 5 18 24 40 42 48 51 59 62 65 74 80 87 91
+escritura            : 29
+escritura1           : 44 47
+escritura2           : 44 47
+estatuto             : 23
+exp                  : 11 32 37 38 39 46 49 54 81 86
+exp1                 : 57 58
+factor               : 77 78 79
+func2                : 19
+func_decl            : 17
+func_declarations    : 2 17
+gexp                 : 60 61
+gexp1                : 63 64
+gexp2                : 64
+lectura              : 28
+lista_ids            : 6 12
+llama                : 38
+llamada              : 30 84
+llamada2             : 38 39
+main                 : 2
+mexp                 : 63 64
+mexp1                : 72 73
+mexp2                : 73
+nocondicional        : 53
+param_decl           : 35 36
+params               : 19 35
+programa             : 0
+repeticion           : 31
+retorno              : 27
+showstacks           : 2
+termino              : 72 73
+termino1             : 77 78 79
+texp                 : 57 58
+texp1                : 60 61
+tipo                 : 6 20 34
+var1                 : 7 8
+var2                 : 4 7
+var_decl             : 12 13
+varcte               : 82
+variable             : 32 43 83
+vars                 : 2 19
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . programa
+    (2) programa -> . PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks
+
+    PROGRAMA        shift and go to state 2
+
+    programa                       shift and go to state 1
+
+state 1
+
+    (0) S' -> programa .
+
+
+
+state 2
+
+    (2) programa -> PROGRAMA . ID SEMICOLON vars createTable func_declarations main showstacks
+
+    ID              shift and go to state 3
+
+
+state 3
+
+    (2) programa -> PROGRAMA ID . SEMICOLON vars createTable func_declarations main showstacks
+
+    SEMICOLON       shift and go to state 4
+
+
+state 4
+
+    (2) programa -> PROGRAMA ID SEMICOLON . vars createTable func_declarations main showstacks
+    (4) vars -> . VAR var2
+    (5) vars -> . empty
+    (1) empty -> .
+
+    VAR             shift and go to state 6
+    FUNCION         reduce using rule 1 (empty -> .)
+    PRINCIPAL       reduce using rule 1 (empty -> .)
+
+    vars                           shift and go to state 5
+    empty                          shift and go to state 7
+
+state 5
+
+    (2) programa -> PROGRAMA ID SEMICOLON vars . createTable func_declarations main showstacks
+    (3) createTable -> . empty
+    (1) empty -> .
+
+    FUNCION         reduce using rule 1 (empty -> .)
+    PRINCIPAL       reduce using rule 1 (empty -> .)
+
+    createTable                    shift and go to state 8
+    empty                          shift and go to state 9
+
+state 6
+
+    (4) vars -> VAR . var2
+    (7) var2 -> . var1 var2
+    (8) var2 -> . var1
+    (6) var1 -> . tipo lista_ids SEMICOLON
+    (14) tipo -> . INT
+    (15) tipo -> . FLOAT
+    (16) tipo -> . CHAR
+
+    INT             shift and go to state 13
+    FLOAT           shift and go to state 14
+    CHAR            shift and go to state 15
+
+    var2                           shift and go to state 10
+    var1                           shift and go to state 11
+    tipo                           shift and go to state 12
+
+state 7
+
+    (5) vars -> empty .
+
+    FUNCION         reduce using rule 5 (vars -> empty .)
+    PRINCIPAL       reduce using rule 5 (vars -> empty .)
+    LCURLY          reduce using rule 5 (vars -> empty .)
+
+
+state 8
+
+    (2) programa -> PROGRAMA ID SEMICOLON vars createTable . func_declarations main showstacks
+    (17) func_declarations -> . func_decl func_declarations
+    (18) func_declarations -> . empty
+    (19) func_decl -> . FUNCION func2 ID LPAREN params RPAREN vars bloque
+    (1) empty -> .
+
+    FUNCION         shift and go to state 19
+    PRINCIPAL       reduce using rule 1 (empty -> .)
+
+    func_declarations              shift and go to state 16
+    func_decl                      shift and go to state 17
+    empty                          shift and go to state 18
+
+state 9
+
+    (3) createTable -> empty .
+
+    FUNCION         reduce using rule 3 (createTable -> empty .)
+    PRINCIPAL       reduce using rule 3 (createTable -> empty .)
+
+
+state 10
+
+    (4) vars -> VAR var2 .
+
+    FUNCION         reduce using rule 4 (vars -> VAR var2 .)
+    PRINCIPAL       reduce using rule 4 (vars -> VAR var2 .)
+    LCURLY          reduce using rule 4 (vars -> VAR var2 .)
+
+
+state 11
+
+    (7) var2 -> var1 . var2
+    (8) var2 -> var1 .
+    (7) var2 -> . var1 var2
+    (8) var2 -> . var1
+    (6) var1 -> . tipo lista_ids SEMICOLON
+    (14) tipo -> . INT
+    (15) tipo -> . FLOAT
+    (16) tipo -> . CHAR
+
+    FUNCION         reduce using rule 8 (var2 -> var1 .)
+    PRINCIPAL       reduce using rule 8 (var2 -> var1 .)
+    LCURLY          reduce using rule 8 (var2 -> var1 .)
+    INT             shift and go to state 13
+    FLOAT           shift and go to state 14
+    CHAR            shift and go to state 15
+
+    var1                           shift and go to state 11
+    var2                           shift and go to state 20
+    tipo                           shift and go to state 12
+
+state 12
+
+    (6) var1 -> tipo . lista_ids SEMICOLON
+    (12) lista_ids -> . lista_ids COMMA var_decl
+    (13) lista_ids -> . var_decl
+    (9) var_decl -> . ID
+    (10) var_decl -> . ID LBRACKET CTEI RBRACKET
+    (11) var_decl -> . ID LBRACKET exp RBRACKET
+
+    ID              shift and go to state 23
+
+    lista_ids                      shift and go to state 21
+    var_decl                       shift and go to state 22
+
+state 13
+
+    (14) tipo -> INT .
+
+    ID              reduce using rule 14 (tipo -> INT .)
+
+
+state 14
+
+    (15) tipo -> FLOAT .
+
+    ID              reduce using rule 15 (tipo -> FLOAT .)
+
+
+state 15
+
+    (16) tipo -> CHAR .
+
+    ID              reduce using rule 16 (tipo -> CHAR .)
+
+
+state 16
+
+    (2) programa -> PROGRAMA ID SEMICOLON vars createTable func_declarations . main showstacks
+    (33) main -> . PRINCIPAL LPAREN RPAREN bloque
+
+    PRINCIPAL       shift and go to state 25
+
+    main                           shift and go to state 24
+
+state 17
+
+    (17) func_declarations -> func_decl . func_declarations
+    (17) func_declarations -> . func_decl func_declarations
+    (18) func_declarations -> . empty
+    (19) func_decl -> . FUNCION func2 ID LPAREN params RPAREN vars bloque
+    (1) empty -> .
+
+    FUNCION         shift and go to state 19
+    PRINCIPAL       reduce using rule 1 (empty -> .)
+
+    func_decl                      shift and go to state 17
+    func_declarations              shift and go to state 26
+    empty                          shift and go to state 18
+
+state 18
+
+    (18) func_declarations -> empty .
+
+    PRINCIPAL       reduce using rule 18 (func_declarations -> empty .)
+
+
+state 19
+
+    (19) func_decl -> FUNCION . func2 ID LPAREN params RPAREN vars bloque
+    (20) func2 -> . tipo
+    (21) func2 -> . VOID
+    (14) tipo -> . INT
+    (15) tipo -> . FLOAT
+    (16) tipo -> . CHAR
+
+    VOID            shift and go to state 29
+    INT             shift and go to state 13
+    FLOAT           shift and go to state 14
+    CHAR            shift and go to state 15
+
+    func2                          shift and go to state 27
+    tipo                           shift and go to state 28
+
+state 20
+
+    (7) var2 -> var1 var2 .
+
+    FUNCION         reduce using rule 7 (var2 -> var1 var2 .)
+    PRINCIPAL       reduce using rule 7 (var2 -> var1 var2 .)
+    LCURLY          reduce using rule 7 (var2 -> var1 var2 .)
+
+
+state 21
+
+    (6) var1 -> tipo lista_ids . SEMICOLON
+    (12) lista_ids -> lista_ids . COMMA var_decl
+
+    SEMICOLON       shift and go to state 30
+    COMMA           shift and go to state 31
+
+
+state 22
+
+    (13) lista_ids -> var_decl .
+
+    SEMICOLON       reduce using rule 13 (lista_ids -> var_decl .)
+    COMMA           reduce using rule 13 (lista_ids -> var_decl .)
+
+
+state 23
+
+    (9) var_decl -> ID .
+    (10) var_decl -> ID . LBRACKET CTEI RBRACKET
+    (11) var_decl -> ID . LBRACKET exp RBRACKET
+
+    SEMICOLON       reduce using rule 9 (var_decl -> ID .)
+    COMMA           reduce using rule 9 (var_decl -> ID .)
+    LBRACKET        shift and go to state 32
+
+
+state 24
+
+    (2) programa -> PROGRAMA ID SEMICOLON vars createTable func_declarations main . showstacks
+    (91) showstacks -> . empty
+    (1) empty -> .
+
+    $end            reduce using rule 1 (empty -> .)
+
+    showstacks                     shift and go to state 33
+    empty                          shift and go to state 34
+
+state 25
+
+    (33) main -> PRINCIPAL . LPAREN RPAREN bloque
+
+    LPAREN          shift and go to state 35
+
+
+state 26
+
+    (17) func_declarations -> func_decl func_declarations .
+
+    PRINCIPAL       reduce using rule 17 (func_declarations -> func_decl func_declarations .)
+
+
+state 27
+
+    (19) func_decl -> FUNCION func2 . ID LPAREN params RPAREN vars bloque
+
+    ID              shift and go to state 36
+
+
+state 28
+
+    (20) func2 -> tipo .
+
+    ID              reduce using rule 20 (func2 -> tipo .)
+
+
+state 29
+
+    (21) func2 -> VOID .
+
+    ID              reduce using rule 21 (func2 -> VOID .)
+
+
+state 30
+
+    (6) var1 -> tipo lista_ids SEMICOLON .
+
+    INT             reduce using rule 6 (var1 -> tipo lista_ids SEMICOLON .)
+    FLOAT           reduce using rule 6 (var1 -> tipo lista_ids SEMICOLON .)
+    CHAR            reduce using rule 6 (var1 -> tipo lista_ids SEMICOLON .)
+    FUNCION         reduce using rule 6 (var1 -> tipo lista_ids SEMICOLON .)
+    PRINCIPAL       reduce using rule 6 (var1 -> tipo lista_ids SEMICOLON .)
+    LCURLY          reduce using rule 6 (var1 -> tipo lista_ids SEMICOLON .)
+
+
+state 31
+
+    (12) lista_ids -> lista_ids COMMA . var_decl
+    (9) var_decl -> . ID
+    (10) var_decl -> . ID LBRACKET CTEI RBRACKET
+    (11) var_decl -> . ID LBRACKET exp RBRACKET
+
+    ID              shift and go to state 23
+
+    var_decl                       shift and go to state 37
+
+state 32
+
+    (10) var_decl -> ID LBRACKET . CTEI RBRACKET
+    (11) var_decl -> ID LBRACKET . exp RBRACKET
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    CTEI            shift and go to state 39
+    LPAREN          shift and go to state 46
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 40
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 33
+
+    (2) programa -> PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks .
+
+    $end            reduce using rule 2 (programa -> PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks .)
+
+
+state 34
+
+    (91) showstacks -> empty .
+
+    $end            reduce using rule 91 (showstacks -> empty .)
+
+
+state 35
+
+    (33) main -> PRINCIPAL LPAREN . RPAREN bloque
+
+    RPAREN          shift and go to state 52
+
+
+state 36
+
+    (19) func_decl -> FUNCION func2 ID . LPAREN params RPAREN vars bloque
+
+    LPAREN          shift and go to state 53
+
+
+state 37
+
+    (12) lista_ids -> lista_ids COMMA var_decl .
+
+    SEMICOLON       reduce using rule 12 (lista_ids -> lista_ids COMMA var_decl .)
+    COMMA           reduce using rule 12 (lista_ids -> lista_ids COMMA var_decl .)
+
+
+state 38
+
+    (85) variable -> ID . dimension
+    (38) llamada -> ID . LPAREN exp llamada2 RPAREN llama
+    (86) dimension -> . LBRACKET exp RBRACKET
+    (87) dimension -> . empty
+    (1) empty -> .
+
+    LPAREN          shift and go to state 55
+    LBRACKET        shift and go to state 56
+    TIMES           reduce using rule 1 (empty -> .)
+    DIVIDE          reduce using rule 1 (empty -> .)
+    PLUS            reduce using rule 1 (empty -> .)
+    MINUS           reduce using rule 1 (empty -> .)
+    LESS            reduce using rule 1 (empty -> .)
+    LESSO           reduce using rule 1 (empty -> .)
+    GREATER         reduce using rule 1 (empty -> .)
+    GREATERO        reduce using rule 1 (empty -> .)
+    NOTEQUAL        reduce using rule 1 (empty -> .)
+    EQUALS          reduce using rule 1 (empty -> .)
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    dimension                      shift and go to state 54
+    empty                          shift and go to state 57
+
+state 39
+
+    (10) var_decl -> ID LBRACKET CTEI . RBRACKET
+    (88) varcte -> CTEI .
+
+  ! shift/reduce conflict for RBRACKET resolved as shift
+    RBRACKET        shift and go to state 58
+    TIMES           reduce using rule 88 (varcte -> CTEI .)
+    DIVIDE          reduce using rule 88 (varcte -> CTEI .)
+    PLUS            reduce using rule 88 (varcte -> CTEI .)
+    MINUS           reduce using rule 88 (varcte -> CTEI .)
+    LESS            reduce using rule 88 (varcte -> CTEI .)
+    LESSO           reduce using rule 88 (varcte -> CTEI .)
+    GREATER         reduce using rule 88 (varcte -> CTEI .)
+    GREATERO        reduce using rule 88 (varcte -> CTEI .)
+    NOTEQUAL        reduce using rule 88 (varcte -> CTEI .)
+    EQUALS          reduce using rule 88 (varcte -> CTEI .)
+    AND             reduce using rule 88 (varcte -> CTEI .)
+    OR              reduce using rule 88 (varcte -> CTEI .)
+
+  ! RBRACKET        [ reduce using rule 88 (varcte -> CTEI .) ]
+
+
+state 40
+
+    (11) var_decl -> ID LBRACKET exp . RBRACKET
+
+    RBRACKET        shift and go to state 59
+
+
+state 41
+
+    (57) exp -> texp . exp1
+    (58) exp1 -> . OR texp exp1
+    (59) exp1 -> . empty
+    (1) empty -> .
+
+    OR              shift and go to state 61
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    exp1                           shift and go to state 60
+    empty                          shift and go to state 62
+
+state 42
+
+    (60) texp -> gexp . texp1
+    (61) texp1 -> . AND gexp texp1
+    (62) texp1 -> . empty
+    (1) empty -> .
+
+    AND             shift and go to state 64
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    texp1                          shift and go to state 63
+    empty                          shift and go to state 65
+
+state 43
+
+    (63) gexp -> mexp . gexp1
+    (64) gexp1 -> . gexp2 mexp gexp1
+    (65) gexp1 -> . empty
+    (66) gexp2 -> . LESS
+    (67) gexp2 -> . LESSO
+    (68) gexp2 -> . GREATER
+    (69) gexp2 -> . GREATERO
+    (70) gexp2 -> . NOTEQUAL
+    (71) gexp2 -> . EQUALS
+    (1) empty -> .
+
+    LESS            shift and go to state 69
+    LESSO           shift and go to state 70
+    GREATER         shift and go to state 71
+    GREATERO        shift and go to state 72
+    NOTEQUAL        shift and go to state 73
+    EQUALS          shift and go to state 74
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    gexp1                          shift and go to state 66
+    gexp2                          shift and go to state 67
+    empty                          shift and go to state 68
+
+state 44
+
+    (72) mexp -> termino . mexp1
+    (73) mexp1 -> . mexp2 termino mexp1
+    (74) mexp1 -> . empty
+    (75) mexp2 -> . PLUS
+    (76) mexp2 -> . MINUS
+    (1) empty -> .
+
+    PLUS            shift and go to state 78
+    MINUS           shift and go to state 79
+    LESS            reduce using rule 1 (empty -> .)
+    LESSO           reduce using rule 1 (empty -> .)
+    GREATER         reduce using rule 1 (empty -> .)
+    GREATERO        reduce using rule 1 (empty -> .)
+    NOTEQUAL        reduce using rule 1 (empty -> .)
+    EQUALS          reduce using rule 1 (empty -> .)
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    mexp1                          shift and go to state 75
+    mexp2                          shift and go to state 76
+    empty                          shift and go to state 77
+
+state 45
+
+    (77) termino -> factor . termino1
+    (78) termino1 -> . TIMES factor termino1
+    (79) termino1 -> . DIVIDE factor termino1
+    (80) termino1 -> . empty
+    (1) empty -> .
+
+    TIMES           shift and go to state 81
+    DIVIDE          shift and go to state 82
+    PLUS            reduce using rule 1 (empty -> .)
+    MINUS           reduce using rule 1 (empty -> .)
+    LESS            reduce using rule 1 (empty -> .)
+    LESSO           reduce using rule 1 (empty -> .)
+    GREATER         reduce using rule 1 (empty -> .)
+    GREATERO        reduce using rule 1 (empty -> .)
+    NOTEQUAL        reduce using rule 1 (empty -> .)
+    EQUALS          reduce using rule 1 (empty -> .)
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    termino1                       shift and go to state 80
+    empty                          shift and go to state 83
+
+state 46
+
+    (81) factor -> LPAREN . exp RPAREN
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 84
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 47
+
+    (82) factor -> varcte .
+
+    TIMES           reduce using rule 82 (factor -> varcte .)
+    DIVIDE          reduce using rule 82 (factor -> varcte .)
+    PLUS            reduce using rule 82 (factor -> varcte .)
+    MINUS           reduce using rule 82 (factor -> varcte .)
+    LESS            reduce using rule 82 (factor -> varcte .)
+    LESSO           reduce using rule 82 (factor -> varcte .)
+    GREATER         reduce using rule 82 (factor -> varcte .)
+    GREATERO        reduce using rule 82 (factor -> varcte .)
+    NOTEQUAL        reduce using rule 82 (factor -> varcte .)
+    EQUALS          reduce using rule 82 (factor -> varcte .)
+    AND             reduce using rule 82 (factor -> varcte .)
+    OR              reduce using rule 82 (factor -> varcte .)
+    RBRACKET        reduce using rule 82 (factor -> varcte .)
+    RPAREN          reduce using rule 82 (factor -> varcte .)
+    COMMA           reduce using rule 82 (factor -> varcte .)
+    SEMICOLON       reduce using rule 82 (factor -> varcte .)
+
+
+state 48
+
+    (83) factor -> variable .
+
+    TIMES           reduce using rule 83 (factor -> variable .)
+    DIVIDE          reduce using rule 83 (factor -> variable .)
+    PLUS            reduce using rule 83 (factor -> variable .)
+    MINUS           reduce using rule 83 (factor -> variable .)
+    LESS            reduce using rule 83 (factor -> variable .)
+    LESSO           reduce using rule 83 (factor -> variable .)
+    GREATER         reduce using rule 83 (factor -> variable .)
+    GREATERO        reduce using rule 83 (factor -> variable .)
+    NOTEQUAL        reduce using rule 83 (factor -> variable .)
+    EQUALS          reduce using rule 83 (factor -> variable .)
+    AND             reduce using rule 83 (factor -> variable .)
+    OR              reduce using rule 83 (factor -> variable .)
+    RBRACKET        reduce using rule 83 (factor -> variable .)
+    RPAREN          reduce using rule 83 (factor -> variable .)
+    COMMA           reduce using rule 83 (factor -> variable .)
+    SEMICOLON       reduce using rule 83 (factor -> variable .)
+
+
+state 49
+
+    (84) factor -> llamada .
+
+    TIMES           reduce using rule 84 (factor -> llamada .)
+    DIVIDE          reduce using rule 84 (factor -> llamada .)
+    PLUS            reduce using rule 84 (factor -> llamada .)
+    MINUS           reduce using rule 84 (factor -> llamada .)
+    LESS            reduce using rule 84 (factor -> llamada .)
+    LESSO           reduce using rule 84 (factor -> llamada .)
+    GREATER         reduce using rule 84 (factor -> llamada .)
+    GREATERO        reduce using rule 84 (factor -> llamada .)
+    NOTEQUAL        reduce using rule 84 (factor -> llamada .)
+    EQUALS          reduce using rule 84 (factor -> llamada .)
+    AND             reduce using rule 84 (factor -> llamada .)
+    OR              reduce using rule 84 (factor -> llamada .)
+    RBRACKET        reduce using rule 84 (factor -> llamada .)
+    RPAREN          reduce using rule 84 (factor -> llamada .)
+    COMMA           reduce using rule 84 (factor -> llamada .)
+    SEMICOLON       reduce using rule 84 (factor -> llamada .)
+
+
+state 50
+
+    (89) varcte -> CTEF .
+
+    TIMES           reduce using rule 89 (varcte -> CTEF .)
+    DIVIDE          reduce using rule 89 (varcte -> CTEF .)
+    PLUS            reduce using rule 89 (varcte -> CTEF .)
+    MINUS           reduce using rule 89 (varcte -> CTEF .)
+    LESS            reduce using rule 89 (varcte -> CTEF .)
+    LESSO           reduce using rule 89 (varcte -> CTEF .)
+    GREATER         reduce using rule 89 (varcte -> CTEF .)
+    GREATERO        reduce using rule 89 (varcte -> CTEF .)
+    NOTEQUAL        reduce using rule 89 (varcte -> CTEF .)
+    EQUALS          reduce using rule 89 (varcte -> CTEF .)
+    AND             reduce using rule 89 (varcte -> CTEF .)
+    OR              reduce using rule 89 (varcte -> CTEF .)
+    RBRACKET        reduce using rule 89 (varcte -> CTEF .)
+    RPAREN          reduce using rule 89 (varcte -> CTEF .)
+    COMMA           reduce using rule 89 (varcte -> CTEF .)
+    SEMICOLON       reduce using rule 89 (varcte -> CTEF .)
+
+
+state 51
+
+    (90) varcte -> CTEC .
+
+    TIMES           reduce using rule 90 (varcte -> CTEC .)
+    DIVIDE          reduce using rule 90 (varcte -> CTEC .)
+    PLUS            reduce using rule 90 (varcte -> CTEC .)
+    MINUS           reduce using rule 90 (varcte -> CTEC .)
+    LESS            reduce using rule 90 (varcte -> CTEC .)
+    LESSO           reduce using rule 90 (varcte -> CTEC .)
+    GREATER         reduce using rule 90 (varcte -> CTEC .)
+    GREATERO        reduce using rule 90 (varcte -> CTEC .)
+    NOTEQUAL        reduce using rule 90 (varcte -> CTEC .)
+    EQUALS          reduce using rule 90 (varcte -> CTEC .)
+    AND             reduce using rule 90 (varcte -> CTEC .)
+    OR              reduce using rule 90 (varcte -> CTEC .)
+    RBRACKET        reduce using rule 90 (varcte -> CTEC .)
+    RPAREN          reduce using rule 90 (varcte -> CTEC .)
+    COMMA           reduce using rule 90 (varcte -> CTEC .)
+    SEMICOLON       reduce using rule 90 (varcte -> CTEC .)
+
+
+state 52
+
+    (33) main -> PRINCIPAL LPAREN RPAREN . bloque
+    (22) bloque -> . LCURLY bloque1 RCURLY
+
+    LCURLY          shift and go to state 87
+
+    bloque                         shift and go to state 86
+
+state 53
+
+    (19) func_decl -> FUNCION func2 ID LPAREN . params RPAREN vars bloque
+    (35) params -> . params COMMA param_decl
+    (36) params -> . param_decl
+    (34) param_decl -> . tipo ID
+    (14) tipo -> . INT
+    (15) tipo -> . FLOAT
+    (16) tipo -> . CHAR
+
+    INT             shift and go to state 13
+    FLOAT           shift and go to state 14
+    CHAR            shift and go to state 15
+
+    params                         shift and go to state 88
+    param_decl                     shift and go to state 89
+    tipo                           shift and go to state 90
+
+state 54
+
+    (85) variable -> ID dimension .
+
+    TIMES           reduce using rule 85 (variable -> ID dimension .)
+    DIVIDE          reduce using rule 85 (variable -> ID dimension .)
+    PLUS            reduce using rule 85 (variable -> ID dimension .)
+    MINUS           reduce using rule 85 (variable -> ID dimension .)
+    LESS            reduce using rule 85 (variable -> ID dimension .)
+    LESSO           reduce using rule 85 (variable -> ID dimension .)
+    GREATER         reduce using rule 85 (variable -> ID dimension .)
+    GREATERO        reduce using rule 85 (variable -> ID dimension .)
+    NOTEQUAL        reduce using rule 85 (variable -> ID dimension .)
+    EQUALS          reduce using rule 85 (variable -> ID dimension .)
+    AND             reduce using rule 85 (variable -> ID dimension .)
+    OR              reduce using rule 85 (variable -> ID dimension .)
+    RBRACKET        reduce using rule 85 (variable -> ID dimension .)
+    RPAREN          reduce using rule 85 (variable -> ID dimension .)
+    COMMA           reduce using rule 85 (variable -> ID dimension .)
+    SEMICOLON       reduce using rule 85 (variable -> ID dimension .)
+    EQUAL           reduce using rule 85 (variable -> ID dimension .)
+
+
+state 55
+
+    (38) llamada -> ID LPAREN . exp llamada2 RPAREN llama
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 91
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 56
+
+    (86) dimension -> LBRACKET . exp RBRACKET
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 92
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 57
+
+    (87) dimension -> empty .
+
+    TIMES           reduce using rule 87 (dimension -> empty .)
+    DIVIDE          reduce using rule 87 (dimension -> empty .)
+    PLUS            reduce using rule 87 (dimension -> empty .)
+    MINUS           reduce using rule 87 (dimension -> empty .)
+    LESS            reduce using rule 87 (dimension -> empty .)
+    LESSO           reduce using rule 87 (dimension -> empty .)
+    GREATER         reduce using rule 87 (dimension -> empty .)
+    GREATERO        reduce using rule 87 (dimension -> empty .)
+    NOTEQUAL        reduce using rule 87 (dimension -> empty .)
+    EQUALS          reduce using rule 87 (dimension -> empty .)
+    AND             reduce using rule 87 (dimension -> empty .)
+    OR              reduce using rule 87 (dimension -> empty .)
+    RBRACKET        reduce using rule 87 (dimension -> empty .)
+    RPAREN          reduce using rule 87 (dimension -> empty .)
+    COMMA           reduce using rule 87 (dimension -> empty .)
+    SEMICOLON       reduce using rule 87 (dimension -> empty .)
+    EQUAL           reduce using rule 87 (dimension -> empty .)
+
+
+state 58
+
+    (10) var_decl -> ID LBRACKET CTEI RBRACKET .
+
+    SEMICOLON       reduce using rule 10 (var_decl -> ID LBRACKET CTEI RBRACKET .)
+    COMMA           reduce using rule 10 (var_decl -> ID LBRACKET CTEI RBRACKET .)
+
+
+state 59
+
+    (11) var_decl -> ID LBRACKET exp RBRACKET .
+
+    SEMICOLON       reduce using rule 11 (var_decl -> ID LBRACKET exp RBRACKET .)
+    COMMA           reduce using rule 11 (var_decl -> ID LBRACKET exp RBRACKET .)
+
+
+state 60
+
+    (57) exp -> texp exp1 .
+
+    RBRACKET        reduce using rule 57 (exp -> texp exp1 .)
+    RPAREN          reduce using rule 57 (exp -> texp exp1 .)
+    COMMA           reduce using rule 57 (exp -> texp exp1 .)
+    SEMICOLON       reduce using rule 57 (exp -> texp exp1 .)
+
+
+state 61
+
+    (58) exp1 -> OR . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    texp                           shift and go to state 93
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 62
+
+    (59) exp1 -> empty .
+
+    RBRACKET        reduce using rule 59 (exp1 -> empty .)
+    RPAREN          reduce using rule 59 (exp1 -> empty .)
+    COMMA           reduce using rule 59 (exp1 -> empty .)
+    SEMICOLON       reduce using rule 59 (exp1 -> empty .)
+
+
+state 63
+
+    (60) texp -> gexp texp1 .
+
+    OR              reduce using rule 60 (texp -> gexp texp1 .)
+    RBRACKET        reduce using rule 60 (texp -> gexp texp1 .)
+    RPAREN          reduce using rule 60 (texp -> gexp texp1 .)
+    COMMA           reduce using rule 60 (texp -> gexp texp1 .)
+    SEMICOLON       reduce using rule 60 (texp -> gexp texp1 .)
+
+
+state 64
+
+    (61) texp1 -> AND . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    gexp                           shift and go to state 94
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 65
+
+    (62) texp1 -> empty .
+
+    OR              reduce using rule 62 (texp1 -> empty .)
+    RBRACKET        reduce using rule 62 (texp1 -> empty .)
+    RPAREN          reduce using rule 62 (texp1 -> empty .)
+    COMMA           reduce using rule 62 (texp1 -> empty .)
+    SEMICOLON       reduce using rule 62 (texp1 -> empty .)
+
+
+state 66
+
+    (63) gexp -> mexp gexp1 .
+
+    AND             reduce using rule 63 (gexp -> mexp gexp1 .)
+    OR              reduce using rule 63 (gexp -> mexp gexp1 .)
+    RBRACKET        reduce using rule 63 (gexp -> mexp gexp1 .)
+    RPAREN          reduce using rule 63 (gexp -> mexp gexp1 .)
+    COMMA           reduce using rule 63 (gexp -> mexp gexp1 .)
+    SEMICOLON       reduce using rule 63 (gexp -> mexp gexp1 .)
+
+
+state 67
+
+    (64) gexp1 -> gexp2 . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    mexp                           shift and go to state 95
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 68
+
+    (65) gexp1 -> empty .
+
+    AND             reduce using rule 65 (gexp1 -> empty .)
+    OR              reduce using rule 65 (gexp1 -> empty .)
+    RBRACKET        reduce using rule 65 (gexp1 -> empty .)
+    RPAREN          reduce using rule 65 (gexp1 -> empty .)
+    COMMA           reduce using rule 65 (gexp1 -> empty .)
+    SEMICOLON       reduce using rule 65 (gexp1 -> empty .)
+
+
+state 69
+
+    (66) gexp2 -> LESS .
+
+    LPAREN          reduce using rule 66 (gexp2 -> LESS .)
+    CTEI            reduce using rule 66 (gexp2 -> LESS .)
+    CTEF            reduce using rule 66 (gexp2 -> LESS .)
+    CTEC            reduce using rule 66 (gexp2 -> LESS .)
+    ID              reduce using rule 66 (gexp2 -> LESS .)
+
+
+state 70
+
+    (67) gexp2 -> LESSO .
+
+    LPAREN          reduce using rule 67 (gexp2 -> LESSO .)
+    CTEI            reduce using rule 67 (gexp2 -> LESSO .)
+    CTEF            reduce using rule 67 (gexp2 -> LESSO .)
+    CTEC            reduce using rule 67 (gexp2 -> LESSO .)
+    ID              reduce using rule 67 (gexp2 -> LESSO .)
+
+
+state 71
+
+    (68) gexp2 -> GREATER .
+
+    LPAREN          reduce using rule 68 (gexp2 -> GREATER .)
+    CTEI            reduce using rule 68 (gexp2 -> GREATER .)
+    CTEF            reduce using rule 68 (gexp2 -> GREATER .)
+    CTEC            reduce using rule 68 (gexp2 -> GREATER .)
+    ID              reduce using rule 68 (gexp2 -> GREATER .)
+
+
+state 72
+
+    (69) gexp2 -> GREATERO .
+
+    LPAREN          reduce using rule 69 (gexp2 -> GREATERO .)
+    CTEI            reduce using rule 69 (gexp2 -> GREATERO .)
+    CTEF            reduce using rule 69 (gexp2 -> GREATERO .)
+    CTEC            reduce using rule 69 (gexp2 -> GREATERO .)
+    ID              reduce using rule 69 (gexp2 -> GREATERO .)
+
+
+state 73
+
+    (70) gexp2 -> NOTEQUAL .
+
+    LPAREN          reduce using rule 70 (gexp2 -> NOTEQUAL .)
+    CTEI            reduce using rule 70 (gexp2 -> NOTEQUAL .)
+    CTEF            reduce using rule 70 (gexp2 -> NOTEQUAL .)
+    CTEC            reduce using rule 70 (gexp2 -> NOTEQUAL .)
+    ID              reduce using rule 70 (gexp2 -> NOTEQUAL .)
+
+
+state 74
+
+    (71) gexp2 -> EQUALS .
+
+    LPAREN          reduce using rule 71 (gexp2 -> EQUALS .)
+    CTEI            reduce using rule 71 (gexp2 -> EQUALS .)
+    CTEF            reduce using rule 71 (gexp2 -> EQUALS .)
+    CTEC            reduce using rule 71 (gexp2 -> EQUALS .)
+    ID              reduce using rule 71 (gexp2 -> EQUALS .)
+
+
+state 75
+
+    (72) mexp -> termino mexp1 .
+
+    LESS            reduce using rule 72 (mexp -> termino mexp1 .)
+    LESSO           reduce using rule 72 (mexp -> termino mexp1 .)
+    GREATER         reduce using rule 72 (mexp -> termino mexp1 .)
+    GREATERO        reduce using rule 72 (mexp -> termino mexp1 .)
+    NOTEQUAL        reduce using rule 72 (mexp -> termino mexp1 .)
+    EQUALS          reduce using rule 72 (mexp -> termino mexp1 .)
+    AND             reduce using rule 72 (mexp -> termino mexp1 .)
+    OR              reduce using rule 72 (mexp -> termino mexp1 .)
+    RBRACKET        reduce using rule 72 (mexp -> termino mexp1 .)
+    RPAREN          reduce using rule 72 (mexp -> termino mexp1 .)
+    COMMA           reduce using rule 72 (mexp -> termino mexp1 .)
+    SEMICOLON       reduce using rule 72 (mexp -> termino mexp1 .)
+
+
+state 76
+
+    (73) mexp1 -> mexp2 . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    termino                        shift and go to state 96
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 77
+
+    (74) mexp1 -> empty .
+
+    LESS            reduce using rule 74 (mexp1 -> empty .)
+    LESSO           reduce using rule 74 (mexp1 -> empty .)
+    GREATER         reduce using rule 74 (mexp1 -> empty .)
+    GREATERO        reduce using rule 74 (mexp1 -> empty .)
+    NOTEQUAL        reduce using rule 74 (mexp1 -> empty .)
+    EQUALS          reduce using rule 74 (mexp1 -> empty .)
+    AND             reduce using rule 74 (mexp1 -> empty .)
+    OR              reduce using rule 74 (mexp1 -> empty .)
+    RBRACKET        reduce using rule 74 (mexp1 -> empty .)
+    RPAREN          reduce using rule 74 (mexp1 -> empty .)
+    COMMA           reduce using rule 74 (mexp1 -> empty .)
+    SEMICOLON       reduce using rule 74 (mexp1 -> empty .)
+
+
+state 78
+
+    (75) mexp2 -> PLUS .
+
+    LPAREN          reduce using rule 75 (mexp2 -> PLUS .)
+    CTEI            reduce using rule 75 (mexp2 -> PLUS .)
+    CTEF            reduce using rule 75 (mexp2 -> PLUS .)
+    CTEC            reduce using rule 75 (mexp2 -> PLUS .)
+    ID              reduce using rule 75 (mexp2 -> PLUS .)
+
+
+state 79
+
+    (76) mexp2 -> MINUS .
+
+    LPAREN          reduce using rule 76 (mexp2 -> MINUS .)
+    CTEI            reduce using rule 76 (mexp2 -> MINUS .)
+    CTEF            reduce using rule 76 (mexp2 -> MINUS .)
+    CTEC            reduce using rule 76 (mexp2 -> MINUS .)
+    ID              reduce using rule 76 (mexp2 -> MINUS .)
+
+
+state 80
+
+    (77) termino -> factor termino1 .
+
+    PLUS            reduce using rule 77 (termino -> factor termino1 .)
+    MINUS           reduce using rule 77 (termino -> factor termino1 .)
+    LESS            reduce using rule 77 (termino -> factor termino1 .)
+    LESSO           reduce using rule 77 (termino -> factor termino1 .)
+    GREATER         reduce using rule 77 (termino -> factor termino1 .)
+    GREATERO        reduce using rule 77 (termino -> factor termino1 .)
+    NOTEQUAL        reduce using rule 77 (termino -> factor termino1 .)
+    EQUALS          reduce using rule 77 (termino -> factor termino1 .)
+    AND             reduce using rule 77 (termino -> factor termino1 .)
+    OR              reduce using rule 77 (termino -> factor termino1 .)
+    RBRACKET        reduce using rule 77 (termino -> factor termino1 .)
+    RPAREN          reduce using rule 77 (termino -> factor termino1 .)
+    COMMA           reduce using rule 77 (termino -> factor termino1 .)
+    SEMICOLON       reduce using rule 77 (termino -> factor termino1 .)
+
+
+state 81
+
+    (78) termino1 -> TIMES . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    factor                         shift and go to state 97
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 82
+
+    (79) termino1 -> DIVIDE . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    factor                         shift and go to state 98
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 83
+
+    (80) termino1 -> empty .
+
+    PLUS            reduce using rule 80 (termino1 -> empty .)
+    MINUS           reduce using rule 80 (termino1 -> empty .)
+    LESS            reduce using rule 80 (termino1 -> empty .)
+    LESSO           reduce using rule 80 (termino1 -> empty .)
+    GREATER         reduce using rule 80 (termino1 -> empty .)
+    GREATERO        reduce using rule 80 (termino1 -> empty .)
+    NOTEQUAL        reduce using rule 80 (termino1 -> empty .)
+    EQUALS          reduce using rule 80 (termino1 -> empty .)
+    AND             reduce using rule 80 (termino1 -> empty .)
+    OR              reduce using rule 80 (termino1 -> empty .)
+    RBRACKET        reduce using rule 80 (termino1 -> empty .)
+    RPAREN          reduce using rule 80 (termino1 -> empty .)
+    COMMA           reduce using rule 80 (termino1 -> empty .)
+    SEMICOLON       reduce using rule 80 (termino1 -> empty .)
+
+
+state 84
+
+    (81) factor -> LPAREN exp . RPAREN
+
+    RPAREN          shift and go to state 99
+
+
+state 85
+
+    (88) varcte -> CTEI .
+
+    TIMES           reduce using rule 88 (varcte -> CTEI .)
+    DIVIDE          reduce using rule 88 (varcte -> CTEI .)
+    PLUS            reduce using rule 88 (varcte -> CTEI .)
+    MINUS           reduce using rule 88 (varcte -> CTEI .)
+    LESS            reduce using rule 88 (varcte -> CTEI .)
+    LESSO           reduce using rule 88 (varcte -> CTEI .)
+    GREATER         reduce using rule 88 (varcte -> CTEI .)
+    GREATERO        reduce using rule 88 (varcte -> CTEI .)
+    NOTEQUAL        reduce using rule 88 (varcte -> CTEI .)
+    EQUALS          reduce using rule 88 (varcte -> CTEI .)
+    AND             reduce using rule 88 (varcte -> CTEI .)
+    OR              reduce using rule 88 (varcte -> CTEI .)
+    RPAREN          reduce using rule 88 (varcte -> CTEI .)
+    COMMA           reduce using rule 88 (varcte -> CTEI .)
+    RBRACKET        reduce using rule 88 (varcte -> CTEI .)
+    SEMICOLON       reduce using rule 88 (varcte -> CTEI .)
+
+
+state 86
+
+    (33) main -> PRINCIPAL LPAREN RPAREN bloque .
+
+    $end            reduce using rule 33 (main -> PRINCIPAL LPAREN RPAREN bloque .)
+
+
+state 87
+
+    (22) bloque -> LCURLY . bloque1 RCURLY
+    (23) bloque1 -> . estatuto bloque1
+    (24) bloque1 -> . empty
+    (25) estatuto -> . asig
+    (26) estatuto -> . cond
+    (27) estatuto -> . retorno
+    (28) estatuto -> . lectura
+    (29) estatuto -> . escritura
+    (30) estatuto -> . llamada
+    (31) estatuto -> . repeticion
+    (1) empty -> .
+    (32) asig -> . variable EQUAL exp SEMICOLON
+    (49) cond -> . SI LPAREN exp RPAREN ENTONCES bloque condicion1
+    (37) retorno -> . REGRESA LPAREN exp RPAREN SEMICOLON
+    (43) lectura -> . LEE LPAREN variable RPAREN SEMICOLON
+    (44) escritura -> . ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+    (52) repeticion -> . condicional
+    (53) repeticion -> . nocondicional
+    (85) variable -> . ID dimension
+    (54) condicional -> . MIENTRAS LPAREN exp RPAREN HAZ bloque
+    (55) nocondicional -> . DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque
+    (56) nocondicional -> . DESDE ID EQUAL CTEI HASTA CTEI HACER bloque
+
+    RCURLY          reduce using rule 1 (empty -> .)
+    SI              shift and go to state 111
+    REGRESA         shift and go to state 112
+    LEE             shift and go to state 113
+    ESCRIBE         shift and go to state 114
+    ID              shift and go to state 115
+    MIENTRAS        shift and go to state 118
+    DESDE           shift and go to state 119
+
+    bloque1                        shift and go to state 100
+    estatuto                       shift and go to state 101
+    empty                          shift and go to state 102
+    asig                           shift and go to state 103
+    cond                           shift and go to state 104
+    retorno                        shift and go to state 105
+    lectura                        shift and go to state 106
+    escritura                      shift and go to state 107
+    llamada                        shift and go to state 108
+    repeticion                     shift and go to state 109
+    variable                       shift and go to state 110
+    condicional                    shift and go to state 116
+    nocondicional                  shift and go to state 117
+
+state 88
+
+    (19) func_decl -> FUNCION func2 ID LPAREN params . RPAREN vars bloque
+    (35) params -> params . COMMA param_decl
+
+    RPAREN          shift and go to state 120
+    COMMA           shift and go to state 121
+
+
+state 89
+
+    (36) params -> param_decl .
+
+    RPAREN          reduce using rule 36 (params -> param_decl .)
+    COMMA           reduce using rule 36 (params -> param_decl .)
+
+
+state 90
+
+    (34) param_decl -> tipo . ID
+
+    ID              shift and go to state 122
+
+
+state 91
+
+    (38) llamada -> ID LPAREN exp . llamada2 RPAREN llama
+    (39) llamada2 -> . COMMA exp llamada2
+    (40) llamada2 -> . empty
+    (1) empty -> .
+
+    COMMA           shift and go to state 124
+    RPAREN          reduce using rule 1 (empty -> .)
+
+    llamada2                       shift and go to state 123
+    empty                          shift and go to state 125
+
+state 92
+
+    (86) dimension -> LBRACKET exp . RBRACKET
+
+    RBRACKET        shift and go to state 126
+
+
+state 93
+
+    (58) exp1 -> OR texp . exp1
+    (58) exp1 -> . OR texp exp1
+    (59) exp1 -> . empty
+    (1) empty -> .
+
+    OR              shift and go to state 61
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    exp1                           shift and go to state 127
+    empty                          shift and go to state 62
+
+state 94
+
+    (61) texp1 -> AND gexp . texp1
+    (61) texp1 -> . AND gexp texp1
+    (62) texp1 -> . empty
+    (1) empty -> .
+
+    AND             shift and go to state 64
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    texp1                          shift and go to state 128
+    empty                          shift and go to state 65
+
+state 95
+
+    (64) gexp1 -> gexp2 mexp . gexp1
+    (64) gexp1 -> . gexp2 mexp gexp1
+    (65) gexp1 -> . empty
+    (66) gexp2 -> . LESS
+    (67) gexp2 -> . LESSO
+    (68) gexp2 -> . GREATER
+    (69) gexp2 -> . GREATERO
+    (70) gexp2 -> . NOTEQUAL
+    (71) gexp2 -> . EQUALS
+    (1) empty -> .
+
+    LESS            shift and go to state 69
+    LESSO           shift and go to state 70
+    GREATER         shift and go to state 71
+    GREATERO        shift and go to state 72
+    NOTEQUAL        shift and go to state 73
+    EQUALS          shift and go to state 74
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    gexp2                          shift and go to state 67
+    gexp1                          shift and go to state 129
+    empty                          shift and go to state 68
+
+state 96
+
+    (73) mexp1 -> mexp2 termino . mexp1
+    (73) mexp1 -> . mexp2 termino mexp1
+    (74) mexp1 -> . empty
+    (75) mexp2 -> . PLUS
+    (76) mexp2 -> . MINUS
+    (1) empty -> .
+
+    PLUS            shift and go to state 78
+    MINUS           shift and go to state 79
+    LESS            reduce using rule 1 (empty -> .)
+    LESSO           reduce using rule 1 (empty -> .)
+    GREATER         reduce using rule 1 (empty -> .)
+    GREATERO        reduce using rule 1 (empty -> .)
+    NOTEQUAL        reduce using rule 1 (empty -> .)
+    EQUALS          reduce using rule 1 (empty -> .)
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    mexp2                          shift and go to state 76
+    mexp1                          shift and go to state 130
+    empty                          shift and go to state 77
+
+state 97
+
+    (78) termino1 -> TIMES factor . termino1
+    (78) termino1 -> . TIMES factor termino1
+    (79) termino1 -> . DIVIDE factor termino1
+    (80) termino1 -> . empty
+    (1) empty -> .
+
+    TIMES           shift and go to state 81
+    DIVIDE          shift and go to state 82
+    PLUS            reduce using rule 1 (empty -> .)
+    MINUS           reduce using rule 1 (empty -> .)
+    LESS            reduce using rule 1 (empty -> .)
+    LESSO           reduce using rule 1 (empty -> .)
+    GREATER         reduce using rule 1 (empty -> .)
+    GREATERO        reduce using rule 1 (empty -> .)
+    NOTEQUAL        reduce using rule 1 (empty -> .)
+    EQUALS          reduce using rule 1 (empty -> .)
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    termino1                       shift and go to state 131
+    empty                          shift and go to state 83
+
+state 98
+
+    (79) termino1 -> DIVIDE factor . termino1
+    (78) termino1 -> . TIMES factor termino1
+    (79) termino1 -> . DIVIDE factor termino1
+    (80) termino1 -> . empty
+    (1) empty -> .
+
+    TIMES           shift and go to state 81
+    DIVIDE          shift and go to state 82
+    PLUS            reduce using rule 1 (empty -> .)
+    MINUS           reduce using rule 1 (empty -> .)
+    LESS            reduce using rule 1 (empty -> .)
+    LESSO           reduce using rule 1 (empty -> .)
+    GREATER         reduce using rule 1 (empty -> .)
+    GREATERO        reduce using rule 1 (empty -> .)
+    NOTEQUAL        reduce using rule 1 (empty -> .)
+    EQUALS          reduce using rule 1 (empty -> .)
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    termino1                       shift and go to state 132
+    empty                          shift and go to state 83
+
+state 99
+
+    (81) factor -> LPAREN exp RPAREN .
+
+    TIMES           reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    DIVIDE          reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    PLUS            reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    MINUS           reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    LESS            reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    LESSO           reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    GREATER         reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    GREATERO        reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    NOTEQUAL        reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    EQUALS          reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    AND             reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    OR              reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    RBRACKET        reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    RPAREN          reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    COMMA           reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+    SEMICOLON       reduce using rule 81 (factor -> LPAREN exp RPAREN .)
+
+
+state 100
+
+    (22) bloque -> LCURLY bloque1 . RCURLY
+
+    RCURLY          shift and go to state 133
+
+
+state 101
+
+    (23) bloque1 -> estatuto . bloque1
+    (23) bloque1 -> . estatuto bloque1
+    (24) bloque1 -> . empty
+    (25) estatuto -> . asig
+    (26) estatuto -> . cond
+    (27) estatuto -> . retorno
+    (28) estatuto -> . lectura
+    (29) estatuto -> . escritura
+    (30) estatuto -> . llamada
+    (31) estatuto -> . repeticion
+    (1) empty -> .
+    (32) asig -> . variable EQUAL exp SEMICOLON
+    (49) cond -> . SI LPAREN exp RPAREN ENTONCES bloque condicion1
+    (37) retorno -> . REGRESA LPAREN exp RPAREN SEMICOLON
+    (43) lectura -> . LEE LPAREN variable RPAREN SEMICOLON
+    (44) escritura -> . ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+    (52) repeticion -> . condicional
+    (53) repeticion -> . nocondicional
+    (85) variable -> . ID dimension
+    (54) condicional -> . MIENTRAS LPAREN exp RPAREN HAZ bloque
+    (55) nocondicional -> . DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque
+    (56) nocondicional -> . DESDE ID EQUAL CTEI HASTA CTEI HACER bloque
+
+    RCURLY          reduce using rule 1 (empty -> .)
+    SI              shift and go to state 111
+    REGRESA         shift and go to state 112
+    LEE             shift and go to state 113
+    ESCRIBE         shift and go to state 114
+    ID              shift and go to state 115
+    MIENTRAS        shift and go to state 118
+    DESDE           shift and go to state 119
+
+    estatuto                       shift and go to state 101
+    bloque1                        shift and go to state 134
+    empty                          shift and go to state 102
+    asig                           shift and go to state 103
+    cond                           shift and go to state 104
+    retorno                        shift and go to state 105
+    lectura                        shift and go to state 106
+    escritura                      shift and go to state 107
+    llamada                        shift and go to state 108
+    repeticion                     shift and go to state 109
+    variable                       shift and go to state 110
+    condicional                    shift and go to state 116
+    nocondicional                  shift and go to state 117
+
+state 102
+
+    (24) bloque1 -> empty .
+
+    RCURLY          reduce using rule 24 (bloque1 -> empty .)
+
+
+state 103
+
+    (25) estatuto -> asig .
+
+    SI              reduce using rule 25 (estatuto -> asig .)
+    REGRESA         reduce using rule 25 (estatuto -> asig .)
+    LEE             reduce using rule 25 (estatuto -> asig .)
+    ESCRIBE         reduce using rule 25 (estatuto -> asig .)
+    ID              reduce using rule 25 (estatuto -> asig .)
+    MIENTRAS        reduce using rule 25 (estatuto -> asig .)
+    DESDE           reduce using rule 25 (estatuto -> asig .)
+    RCURLY          reduce using rule 25 (estatuto -> asig .)
+
+
+state 104
+
+    (26) estatuto -> cond .
+
+    SI              reduce using rule 26 (estatuto -> cond .)
+    REGRESA         reduce using rule 26 (estatuto -> cond .)
+    LEE             reduce using rule 26 (estatuto -> cond .)
+    ESCRIBE         reduce using rule 26 (estatuto -> cond .)
+    ID              reduce using rule 26 (estatuto -> cond .)
+    MIENTRAS        reduce using rule 26 (estatuto -> cond .)
+    DESDE           reduce using rule 26 (estatuto -> cond .)
+    RCURLY          reduce using rule 26 (estatuto -> cond .)
+
+
+state 105
+
+    (27) estatuto -> retorno .
+
+    SI              reduce using rule 27 (estatuto -> retorno .)
+    REGRESA         reduce using rule 27 (estatuto -> retorno .)
+    LEE             reduce using rule 27 (estatuto -> retorno .)
+    ESCRIBE         reduce using rule 27 (estatuto -> retorno .)
+    ID              reduce using rule 27 (estatuto -> retorno .)
+    MIENTRAS        reduce using rule 27 (estatuto -> retorno .)
+    DESDE           reduce using rule 27 (estatuto -> retorno .)
+    RCURLY          reduce using rule 27 (estatuto -> retorno .)
+
+
+state 106
+
+    (28) estatuto -> lectura .
+
+    SI              reduce using rule 28 (estatuto -> lectura .)
+    REGRESA         reduce using rule 28 (estatuto -> lectura .)
+    LEE             reduce using rule 28 (estatuto -> lectura .)
+    ESCRIBE         reduce using rule 28 (estatuto -> lectura .)
+    ID              reduce using rule 28 (estatuto -> lectura .)
+    MIENTRAS        reduce using rule 28 (estatuto -> lectura .)
+    DESDE           reduce using rule 28 (estatuto -> lectura .)
+    RCURLY          reduce using rule 28 (estatuto -> lectura .)
+
+
+state 107
+
+    (29) estatuto -> escritura .
+
+    SI              reduce using rule 29 (estatuto -> escritura .)
+    REGRESA         reduce using rule 29 (estatuto -> escritura .)
+    LEE             reduce using rule 29 (estatuto -> escritura .)
+    ESCRIBE         reduce using rule 29 (estatuto -> escritura .)
+    ID              reduce using rule 29 (estatuto -> escritura .)
+    MIENTRAS        reduce using rule 29 (estatuto -> escritura .)
+    DESDE           reduce using rule 29 (estatuto -> escritura .)
+    RCURLY          reduce using rule 29 (estatuto -> escritura .)
+
+
+state 108
+
+    (30) estatuto -> llamada .
+
+    SI              reduce using rule 30 (estatuto -> llamada .)
+    REGRESA         reduce using rule 30 (estatuto -> llamada .)
+    LEE             reduce using rule 30 (estatuto -> llamada .)
+    ESCRIBE         reduce using rule 30 (estatuto -> llamada .)
+    ID              reduce using rule 30 (estatuto -> llamada .)
+    MIENTRAS        reduce using rule 30 (estatuto -> llamada .)
+    DESDE           reduce using rule 30 (estatuto -> llamada .)
+    RCURLY          reduce using rule 30 (estatuto -> llamada .)
+
+
+state 109
+
+    (31) estatuto -> repeticion .
+
+    SI              reduce using rule 31 (estatuto -> repeticion .)
+    REGRESA         reduce using rule 31 (estatuto -> repeticion .)
+    LEE             reduce using rule 31 (estatuto -> repeticion .)
+    ESCRIBE         reduce using rule 31 (estatuto -> repeticion .)
+    ID              reduce using rule 31 (estatuto -> repeticion .)
+    MIENTRAS        reduce using rule 31 (estatuto -> repeticion .)
+    DESDE           reduce using rule 31 (estatuto -> repeticion .)
+    RCURLY          reduce using rule 31 (estatuto -> repeticion .)
+
+
+state 110
+
+    (32) asig -> variable . EQUAL exp SEMICOLON
+
+    EQUAL           shift and go to state 135
+
+
+state 111
+
+    (49) cond -> SI . LPAREN exp RPAREN ENTONCES bloque condicion1
+
+    LPAREN          shift and go to state 136
+
+
+state 112
+
+    (37) retorno -> REGRESA . LPAREN exp RPAREN SEMICOLON
+
+    LPAREN          shift and go to state 137
+
+
+state 113
+
+    (43) lectura -> LEE . LPAREN variable RPAREN SEMICOLON
+
+    LPAREN          shift and go to state 138
+
+
+state 114
+
+    (44) escritura -> ESCRIBE . LPAREN escritura1 escritura2 RPAREN SEMICOLON
+
+    LPAREN          shift and go to state 139
+
+
+state 115
+
+    (38) llamada -> ID . LPAREN exp llamada2 RPAREN llama
+    (85) variable -> ID . dimension
+    (86) dimension -> . LBRACKET exp RBRACKET
+    (87) dimension -> . empty
+    (1) empty -> .
+
+    LPAREN          shift and go to state 55
+    LBRACKET        shift and go to state 56
+    EQUAL           reduce using rule 1 (empty -> .)
+
+    dimension                      shift and go to state 54
+    empty                          shift and go to state 57
+
+state 116
+
+    (52) repeticion -> condicional .
+
+    SI              reduce using rule 52 (repeticion -> condicional .)
+    REGRESA         reduce using rule 52 (repeticion -> condicional .)
+    LEE             reduce using rule 52 (repeticion -> condicional .)
+    ESCRIBE         reduce using rule 52 (repeticion -> condicional .)
+    ID              reduce using rule 52 (repeticion -> condicional .)
+    MIENTRAS        reduce using rule 52 (repeticion -> condicional .)
+    DESDE           reduce using rule 52 (repeticion -> condicional .)
+    RCURLY          reduce using rule 52 (repeticion -> condicional .)
+
+
+state 117
+
+    (53) repeticion -> nocondicional .
+
+    SI              reduce using rule 53 (repeticion -> nocondicional .)
+    REGRESA         reduce using rule 53 (repeticion -> nocondicional .)
+    LEE             reduce using rule 53 (repeticion -> nocondicional .)
+    ESCRIBE         reduce using rule 53 (repeticion -> nocondicional .)
+    ID              reduce using rule 53 (repeticion -> nocondicional .)
+    MIENTRAS        reduce using rule 53 (repeticion -> nocondicional .)
+    DESDE           reduce using rule 53 (repeticion -> nocondicional .)
+    RCURLY          reduce using rule 53 (repeticion -> nocondicional .)
+
+
+state 118
+
+    (54) condicional -> MIENTRAS . LPAREN exp RPAREN HAZ bloque
+
+    LPAREN          shift and go to state 140
+
+
+state 119
+
+    (55) nocondicional -> DESDE . ID dimension EQUAL CTEI HASTA CTEI HACER bloque
+    (56) nocondicional -> DESDE . ID EQUAL CTEI HASTA CTEI HACER bloque
+
+    ID              shift and go to state 141
+
+
+state 120
+
+    (19) func_decl -> FUNCION func2 ID LPAREN params RPAREN . vars bloque
+    (4) vars -> . VAR var2
+    (5) vars -> . empty
+    (1) empty -> .
+
+    VAR             shift and go to state 6
+    LCURLY          reduce using rule 1 (empty -> .)
+
+    vars                           shift and go to state 142
+    empty                          shift and go to state 7
+
+state 121
+
+    (35) params -> params COMMA . param_decl
+    (34) param_decl -> . tipo ID
+    (14) tipo -> . INT
+    (15) tipo -> . FLOAT
+    (16) tipo -> . CHAR
+
+    INT             shift and go to state 13
+    FLOAT           shift and go to state 14
+    CHAR            shift and go to state 15
+
+    param_decl                     shift and go to state 143
+    tipo                           shift and go to state 90
+
+state 122
+
+    (34) param_decl -> tipo ID .
+
+    RPAREN          reduce using rule 34 (param_decl -> tipo ID .)
+    COMMA           reduce using rule 34 (param_decl -> tipo ID .)
+
+
+state 123
+
+    (38) llamada -> ID LPAREN exp llamada2 . RPAREN llama
+
+    RPAREN          shift and go to state 144
+
+
+state 124
+
+    (39) llamada2 -> COMMA . exp llamada2
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 145
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 125
+
+    (40) llamada2 -> empty .
+
+    RPAREN          reduce using rule 40 (llamada2 -> empty .)
+
+
+state 126
+
+    (86) dimension -> LBRACKET exp RBRACKET .
+
+    TIMES           reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    DIVIDE          reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    PLUS            reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    MINUS           reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    LESS            reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    LESSO           reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    GREATER         reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    GREATERO        reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    NOTEQUAL        reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    EQUALS          reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    AND             reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    OR              reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    RBRACKET        reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    RPAREN          reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    COMMA           reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    SEMICOLON       reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+    EQUAL           reduce using rule 86 (dimension -> LBRACKET exp RBRACKET .)
+
+
+state 127
+
+    (58) exp1 -> OR texp exp1 .
+
+    RBRACKET        reduce using rule 58 (exp1 -> OR texp exp1 .)
+    RPAREN          reduce using rule 58 (exp1 -> OR texp exp1 .)
+    COMMA           reduce using rule 58 (exp1 -> OR texp exp1 .)
+    SEMICOLON       reduce using rule 58 (exp1 -> OR texp exp1 .)
+
+
+state 128
+
+    (61) texp1 -> AND gexp texp1 .
+
+    OR              reduce using rule 61 (texp1 -> AND gexp texp1 .)
+    RBRACKET        reduce using rule 61 (texp1 -> AND gexp texp1 .)
+    RPAREN          reduce using rule 61 (texp1 -> AND gexp texp1 .)
+    COMMA           reduce using rule 61 (texp1 -> AND gexp texp1 .)
+    SEMICOLON       reduce using rule 61 (texp1 -> AND gexp texp1 .)
+
+
+state 129
+
+    (64) gexp1 -> gexp2 mexp gexp1 .
+
+    AND             reduce using rule 64 (gexp1 -> gexp2 mexp gexp1 .)
+    OR              reduce using rule 64 (gexp1 -> gexp2 mexp gexp1 .)
+    RBRACKET        reduce using rule 64 (gexp1 -> gexp2 mexp gexp1 .)
+    RPAREN          reduce using rule 64 (gexp1 -> gexp2 mexp gexp1 .)
+    COMMA           reduce using rule 64 (gexp1 -> gexp2 mexp gexp1 .)
+    SEMICOLON       reduce using rule 64 (gexp1 -> gexp2 mexp gexp1 .)
+
+
+state 130
+
+    (73) mexp1 -> mexp2 termino mexp1 .
+
+    LESS            reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    LESSO           reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    GREATER         reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    GREATERO        reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    NOTEQUAL        reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    EQUALS          reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    AND             reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    OR              reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    RBRACKET        reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    RPAREN          reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    COMMA           reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+    SEMICOLON       reduce using rule 73 (mexp1 -> mexp2 termino mexp1 .)
+
+
+state 131
+
+    (78) termino1 -> TIMES factor termino1 .
+
+    PLUS            reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    MINUS           reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    LESS            reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    LESSO           reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    GREATER         reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    GREATERO        reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    NOTEQUAL        reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    EQUALS          reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    AND             reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    OR              reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    RBRACKET        reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    RPAREN          reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    COMMA           reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+    SEMICOLON       reduce using rule 78 (termino1 -> TIMES factor termino1 .)
+
+
+state 132
+
+    (79) termino1 -> DIVIDE factor termino1 .
+
+    PLUS            reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    MINUS           reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    LESS            reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    LESSO           reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    GREATER         reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    GREATERO        reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    NOTEQUAL        reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    EQUALS          reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    AND             reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    OR              reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    RBRACKET        reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    RPAREN          reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    COMMA           reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+    SEMICOLON       reduce using rule 79 (termino1 -> DIVIDE factor termino1 .)
+
+
+state 133
+
+    (22) bloque -> LCURLY bloque1 RCURLY .
+
+    $end            reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    FUNCION         reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    PRINCIPAL       reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    SINO            reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    SI              reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    REGRESA         reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    LEE             reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    ESCRIBE         reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    ID              reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    MIENTRAS        reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    DESDE           reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+    RCURLY          reduce using rule 22 (bloque -> LCURLY bloque1 RCURLY .)
+
+
+state 134
+
+    (23) bloque1 -> estatuto bloque1 .
+
+    RCURLY          reduce using rule 23 (bloque1 -> estatuto bloque1 .)
+
+
+state 135
+
+    (32) asig -> variable EQUAL . exp SEMICOLON
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    variable                       shift and go to state 48
+    exp                            shift and go to state 146
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    llamada                        shift and go to state 49
+
+state 136
+
+    (49) cond -> SI LPAREN . exp RPAREN ENTONCES bloque condicion1
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 147
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 137
+
+    (37) retorno -> REGRESA LPAREN . exp RPAREN SEMICOLON
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 148
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 138
+
+    (43) lectura -> LEE LPAREN . variable RPAREN SEMICOLON
+    (85) variable -> . ID dimension
+
+    ID              shift and go to state 150
+
+    variable                       shift and go to state 149
+
+state 139
+
+    (44) escritura -> ESCRIBE LPAREN . escritura1 escritura2 RPAREN SEMICOLON
+    (45) escritura1 -> . CTES
+    (46) escritura1 -> . exp
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    CTES            shift and go to state 152
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    escritura1                     shift and go to state 151
+    exp                            shift and go to state 153
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 140
+
+    (54) condicional -> MIENTRAS LPAREN . exp RPAREN HAZ bloque
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    exp                            shift and go to state 154
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 141
+
+    (55) nocondicional -> DESDE ID . dimension EQUAL CTEI HASTA CTEI HACER bloque
+    (56) nocondicional -> DESDE ID . EQUAL CTEI HASTA CTEI HACER bloque
+    (86) dimension -> . LBRACKET exp RBRACKET
+    (87) dimension -> . empty
+    (1) empty -> .
+
+  ! shift/reduce conflict for EQUAL resolved as shift
+    EQUAL           shift and go to state 156
+    LBRACKET        shift and go to state 56
+
+  ! EQUAL           [ reduce using rule 1 (empty -> .) ]
+
+    dimension                      shift and go to state 155
+    empty                          shift and go to state 57
+
+state 142
+
+    (19) func_decl -> FUNCION func2 ID LPAREN params RPAREN vars . bloque
+    (22) bloque -> . LCURLY bloque1 RCURLY
+
+    LCURLY          shift and go to state 87
+
+    bloque                         shift and go to state 157
+
+state 143
+
+    (35) params -> params COMMA param_decl .
+
+    RPAREN          reduce using rule 35 (params -> params COMMA param_decl .)
+    COMMA           reduce using rule 35 (params -> params COMMA param_decl .)
+
+
+state 144
+
+    (38) llamada -> ID LPAREN exp llamada2 RPAREN . llama
+    (41) llama -> . SEMICOLON
+    (42) llama -> . empty
+    (1) empty -> .
+
+  ! shift/reduce conflict for SEMICOLON resolved as shift
+    SEMICOLON       shift and go to state 159
+    TIMES           reduce using rule 1 (empty -> .)
+    DIVIDE          reduce using rule 1 (empty -> .)
+    PLUS            reduce using rule 1 (empty -> .)
+    MINUS           reduce using rule 1 (empty -> .)
+    LESS            reduce using rule 1 (empty -> .)
+    LESSO           reduce using rule 1 (empty -> .)
+    GREATER         reduce using rule 1 (empty -> .)
+    GREATERO        reduce using rule 1 (empty -> .)
+    NOTEQUAL        reduce using rule 1 (empty -> .)
+    EQUALS          reduce using rule 1 (empty -> .)
+    AND             reduce using rule 1 (empty -> .)
+    OR              reduce using rule 1 (empty -> .)
+    RBRACKET        reduce using rule 1 (empty -> .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    COMMA           reduce using rule 1 (empty -> .)
+    SI              reduce using rule 1 (empty -> .)
+    REGRESA         reduce using rule 1 (empty -> .)
+    LEE             reduce using rule 1 (empty -> .)
+    ESCRIBE         reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+    MIENTRAS        reduce using rule 1 (empty -> .)
+    DESDE           reduce using rule 1 (empty -> .)
+    RCURLY          reduce using rule 1 (empty -> .)
+
+  ! SEMICOLON       [ reduce using rule 1 (empty -> .) ]
+
+    llama                          shift and go to state 158
+    empty                          shift and go to state 160
+
+state 145
+
+    (39) llamada2 -> COMMA exp . llamada2
+    (39) llamada2 -> . COMMA exp llamada2
+    (40) llamada2 -> . empty
+    (1) empty -> .
+
+    COMMA           shift and go to state 124
+    RPAREN          reduce using rule 1 (empty -> .)
+
+    llamada2                       shift and go to state 161
+    empty                          shift and go to state 125
+
+state 146
+
+    (32) asig -> variable EQUAL exp . SEMICOLON
+
+    SEMICOLON       shift and go to state 162
+
+
+state 147
+
+    (49) cond -> SI LPAREN exp . RPAREN ENTONCES bloque condicion1
+
+    RPAREN          shift and go to state 163
+
+
+state 148
+
+    (37) retorno -> REGRESA LPAREN exp . RPAREN SEMICOLON
+
+    RPAREN          shift and go to state 164
+
+
+state 149
+
+    (43) lectura -> LEE LPAREN variable . RPAREN SEMICOLON
+
+    RPAREN          shift and go to state 165
+
+
+state 150
+
+    (85) variable -> ID . dimension
+    (86) dimension -> . LBRACKET exp RBRACKET
+    (87) dimension -> . empty
+    (1) empty -> .
+
+    LBRACKET        shift and go to state 56
+    RPAREN          reduce using rule 1 (empty -> .)
+
+    dimension                      shift and go to state 54
+    empty                          shift and go to state 57
+
+state 151
+
+    (44) escritura -> ESCRIBE LPAREN escritura1 . escritura2 RPAREN SEMICOLON
+    (47) escritura2 -> . COMMA escritura1 escritura2
+    (48) escritura2 -> . empty
+    (1) empty -> .
+
+    COMMA           shift and go to state 167
+    RPAREN          reduce using rule 1 (empty -> .)
+
+    escritura2                     shift and go to state 166
+    empty                          shift and go to state 168
+
+state 152
+
+    (45) escritura1 -> CTES .
+
+    COMMA           reduce using rule 45 (escritura1 -> CTES .)
+    RPAREN          reduce using rule 45 (escritura1 -> CTES .)
+
+
+state 153
+
+    (46) escritura1 -> exp .
+
+    COMMA           reduce using rule 46 (escritura1 -> exp .)
+    RPAREN          reduce using rule 46 (escritura1 -> exp .)
+
+
+state 154
+
+    (54) condicional -> MIENTRAS LPAREN exp . RPAREN HAZ bloque
+
+    RPAREN          shift and go to state 169
+
+
+state 155
+
+    (55) nocondicional -> DESDE ID dimension . EQUAL CTEI HASTA CTEI HACER bloque
+
+    EQUAL           shift and go to state 170
+
+
+state 156
+
+    (56) nocondicional -> DESDE ID EQUAL . CTEI HASTA CTEI HACER bloque
+
+    CTEI            shift and go to state 171
+
+
+state 157
+
+    (19) func_decl -> FUNCION func2 ID LPAREN params RPAREN vars bloque .
+
+    FUNCION         reduce using rule 19 (func_decl -> FUNCION func2 ID LPAREN params RPAREN vars bloque .)
+    PRINCIPAL       reduce using rule 19 (func_decl -> FUNCION func2 ID LPAREN params RPAREN vars bloque .)
+
+
+state 158
+
+    (38) llamada -> ID LPAREN exp llamada2 RPAREN llama .
+
+    TIMES           reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    DIVIDE          reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    PLUS            reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    MINUS           reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    LESS            reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    LESSO           reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    GREATER         reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    GREATERO        reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    NOTEQUAL        reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    EQUALS          reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    AND             reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    OR              reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    RBRACKET        reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    RPAREN          reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    COMMA           reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    SEMICOLON       reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    SI              reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    REGRESA         reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    LEE             reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    ESCRIBE         reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    ID              reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    MIENTRAS        reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    DESDE           reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+    RCURLY          reduce using rule 38 (llamada -> ID LPAREN exp llamada2 RPAREN llama .)
+
+
+state 159
+
+    (41) llama -> SEMICOLON .
+
+    TIMES           reduce using rule 41 (llama -> SEMICOLON .)
+    DIVIDE          reduce using rule 41 (llama -> SEMICOLON .)
+    PLUS            reduce using rule 41 (llama -> SEMICOLON .)
+    MINUS           reduce using rule 41 (llama -> SEMICOLON .)
+    LESS            reduce using rule 41 (llama -> SEMICOLON .)
+    LESSO           reduce using rule 41 (llama -> SEMICOLON .)
+    GREATER         reduce using rule 41 (llama -> SEMICOLON .)
+    GREATERO        reduce using rule 41 (llama -> SEMICOLON .)
+    NOTEQUAL        reduce using rule 41 (llama -> SEMICOLON .)
+    EQUALS          reduce using rule 41 (llama -> SEMICOLON .)
+    AND             reduce using rule 41 (llama -> SEMICOLON .)
+    OR              reduce using rule 41 (llama -> SEMICOLON .)
+    RBRACKET        reduce using rule 41 (llama -> SEMICOLON .)
+    RPAREN          reduce using rule 41 (llama -> SEMICOLON .)
+    COMMA           reduce using rule 41 (llama -> SEMICOLON .)
+    SEMICOLON       reduce using rule 41 (llama -> SEMICOLON .)
+    SI              reduce using rule 41 (llama -> SEMICOLON .)
+    REGRESA         reduce using rule 41 (llama -> SEMICOLON .)
+    LEE             reduce using rule 41 (llama -> SEMICOLON .)
+    ESCRIBE         reduce using rule 41 (llama -> SEMICOLON .)
+    ID              reduce using rule 41 (llama -> SEMICOLON .)
+    MIENTRAS        reduce using rule 41 (llama -> SEMICOLON .)
+    DESDE           reduce using rule 41 (llama -> SEMICOLON .)
+    RCURLY          reduce using rule 41 (llama -> SEMICOLON .)
+
+
+state 160
+
+    (42) llama -> empty .
+
+    TIMES           reduce using rule 42 (llama -> empty .)
+    DIVIDE          reduce using rule 42 (llama -> empty .)
+    PLUS            reduce using rule 42 (llama -> empty .)
+    MINUS           reduce using rule 42 (llama -> empty .)
+    LESS            reduce using rule 42 (llama -> empty .)
+    LESSO           reduce using rule 42 (llama -> empty .)
+    GREATER         reduce using rule 42 (llama -> empty .)
+    GREATERO        reduce using rule 42 (llama -> empty .)
+    NOTEQUAL        reduce using rule 42 (llama -> empty .)
+    EQUALS          reduce using rule 42 (llama -> empty .)
+    AND             reduce using rule 42 (llama -> empty .)
+    OR              reduce using rule 42 (llama -> empty .)
+    RBRACKET        reduce using rule 42 (llama -> empty .)
+    RPAREN          reduce using rule 42 (llama -> empty .)
+    COMMA           reduce using rule 42 (llama -> empty .)
+    SEMICOLON       reduce using rule 42 (llama -> empty .)
+    SI              reduce using rule 42 (llama -> empty .)
+    REGRESA         reduce using rule 42 (llama -> empty .)
+    LEE             reduce using rule 42 (llama -> empty .)
+    ESCRIBE         reduce using rule 42 (llama -> empty .)
+    ID              reduce using rule 42 (llama -> empty .)
+    MIENTRAS        reduce using rule 42 (llama -> empty .)
+    DESDE           reduce using rule 42 (llama -> empty .)
+    RCURLY          reduce using rule 42 (llama -> empty .)
+
+
+state 161
+
+    (39) llamada2 -> COMMA exp llamada2 .
+
+    RPAREN          reduce using rule 39 (llamada2 -> COMMA exp llamada2 .)
+
+
+state 162
+
+    (32) asig -> variable EQUAL exp SEMICOLON .
+
+    SI              reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+    REGRESA         reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+    LEE             reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+    ESCRIBE         reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+    ID              reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+    MIENTRAS        reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+    DESDE           reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+    RCURLY          reduce using rule 32 (asig -> variable EQUAL exp SEMICOLON .)
+
+
+state 163
+
+    (49) cond -> SI LPAREN exp RPAREN . ENTONCES bloque condicion1
+
+    ENTONCES        shift and go to state 172
+
+
+state 164
+
+    (37) retorno -> REGRESA LPAREN exp RPAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 173
+
+
+state 165
+
+    (43) lectura -> LEE LPAREN variable RPAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 174
+
+
+state 166
+
+    (44) escritura -> ESCRIBE LPAREN escritura1 escritura2 . RPAREN SEMICOLON
+
+    RPAREN          shift and go to state 175
+
+
+state 167
+
+    (47) escritura2 -> COMMA . escritura1 escritura2
+    (45) escritura1 -> . CTES
+    (46) escritura1 -> . exp
+    (57) exp -> . texp exp1
+    (60) texp -> . gexp texp1
+    (63) gexp -> . mexp gexp1
+    (72) mexp -> . termino mexp1
+    (77) termino -> . factor termino1
+    (81) factor -> . LPAREN exp RPAREN
+    (82) factor -> . varcte
+    (83) factor -> . variable
+    (84) factor -> . llamada
+    (88) varcte -> . CTEI
+    (89) varcte -> . CTEF
+    (90) varcte -> . CTEC
+    (85) variable -> . ID dimension
+    (38) llamada -> . ID LPAREN exp llamada2 RPAREN llama
+
+    CTES            shift and go to state 152
+    LPAREN          shift and go to state 46
+    CTEI            shift and go to state 85
+    CTEF            shift and go to state 50
+    CTEC            shift and go to state 51
+    ID              shift and go to state 38
+
+    escritura1                     shift and go to state 176
+    exp                            shift and go to state 153
+    texp                           shift and go to state 41
+    gexp                           shift and go to state 42
+    mexp                           shift and go to state 43
+    termino                        shift and go to state 44
+    factor                         shift and go to state 45
+    varcte                         shift and go to state 47
+    variable                       shift and go to state 48
+    llamada                        shift and go to state 49
+
+state 168
+
+    (48) escritura2 -> empty .
+
+    RPAREN          reduce using rule 48 (escritura2 -> empty .)
+
+
+state 169
+
+    (54) condicional -> MIENTRAS LPAREN exp RPAREN . HAZ bloque
+
+    HAZ             shift and go to state 177
+
+
+state 170
+
+    (55) nocondicional -> DESDE ID dimension EQUAL . CTEI HASTA CTEI HACER bloque
+
+    CTEI            shift and go to state 178
+
+
+state 171
+
+    (56) nocondicional -> DESDE ID EQUAL CTEI . HASTA CTEI HACER bloque
+
+    HASTA           shift and go to state 179
+
+
+state 172
+
+    (49) cond -> SI LPAREN exp RPAREN ENTONCES . bloque condicion1
+    (22) bloque -> . LCURLY bloque1 RCURLY
+
+    LCURLY          shift and go to state 87
+
+    bloque                         shift and go to state 180
+
+state 173
+
+    (37) retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .
+
+    SI              reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+    REGRESA         reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+    LEE             reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+    ESCRIBE         reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+    ID              reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+    MIENTRAS        reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+    DESDE           reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+    RCURLY          reduce using rule 37 (retorno -> REGRESA LPAREN exp RPAREN SEMICOLON .)
+
+
+state 174
+
+    (43) lectura -> LEE LPAREN variable RPAREN SEMICOLON .
+
+    SI              reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+    REGRESA         reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+    LEE             reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+    ESCRIBE         reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+    ID              reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+    MIENTRAS        reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+    DESDE           reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+    RCURLY          reduce using rule 43 (lectura -> LEE LPAREN variable RPAREN SEMICOLON .)
+
+
+state 175
+
+    (44) escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 181
+
+
+state 176
+
+    (47) escritura2 -> COMMA escritura1 . escritura2
+    (47) escritura2 -> . COMMA escritura1 escritura2
+    (48) escritura2 -> . empty
+    (1) empty -> .
+
+    COMMA           shift and go to state 167
+    RPAREN          reduce using rule 1 (empty -> .)
+
+    escritura2                     shift and go to state 182
+    empty                          shift and go to state 168
+
+state 177
+
+    (54) condicional -> MIENTRAS LPAREN exp RPAREN HAZ . bloque
+    (22) bloque -> . LCURLY bloque1 RCURLY
+
+    LCURLY          shift and go to state 87
+
+    bloque                         shift and go to state 183
+
+state 178
+
+    (55) nocondicional -> DESDE ID dimension EQUAL CTEI . HASTA CTEI HACER bloque
+
+    HASTA           shift and go to state 184
+
+
+state 179
+
+    (56) nocondicional -> DESDE ID EQUAL CTEI HASTA . CTEI HACER bloque
+
+    CTEI            shift and go to state 185
+
+
+state 180
+
+    (49) cond -> SI LPAREN exp RPAREN ENTONCES bloque . condicion1
+    (50) condicion1 -> . SINO bloque
+    (51) condicion1 -> . empty
+    (1) empty -> .
+
+    SINO            shift and go to state 187
+    SI              reduce using rule 1 (empty -> .)
+    REGRESA         reduce using rule 1 (empty -> .)
+    LEE             reduce using rule 1 (empty -> .)
+    ESCRIBE         reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+    MIENTRAS        reduce using rule 1 (empty -> .)
+    DESDE           reduce using rule 1 (empty -> .)
+    RCURLY          reduce using rule 1 (empty -> .)
+
+    condicion1                     shift and go to state 186
+    empty                          shift and go to state 188
+
+state 181
+
+    (44) escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .
+
+    SI              reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+    REGRESA         reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+    LEE             reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+    ESCRIBE         reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+    ID              reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+    MIENTRAS        reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+    DESDE           reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+    RCURLY          reduce using rule 44 (escritura -> ESCRIBE LPAREN escritura1 escritura2 RPAREN SEMICOLON .)
+
+
+state 182
+
+    (47) escritura2 -> COMMA escritura1 escritura2 .
+
+    RPAREN          reduce using rule 47 (escritura2 -> COMMA escritura1 escritura2 .)
+
+
+state 183
+
+    (54) condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .
+
+    SI              reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+    REGRESA         reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+    LEE             reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+    ESCRIBE         reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+    ID              reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+    MIENTRAS        reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+    DESDE           reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+    RCURLY          reduce using rule 54 (condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque .)
+
+
+state 184
+
+    (55) nocondicional -> DESDE ID dimension EQUAL CTEI HASTA . CTEI HACER bloque
+
+    CTEI            shift and go to state 189
+
+
+state 185
+
+    (56) nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI . HACER bloque
+
+    HACER           shift and go to state 190
+
+
+state 186
+
+    (49) cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .
+
+    SI              reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+    REGRESA         reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+    LEE             reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+    ESCRIBE         reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+    ID              reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+    MIENTRAS        reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+    DESDE           reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+    RCURLY          reduce using rule 49 (cond -> SI LPAREN exp RPAREN ENTONCES bloque condicion1 .)
+
+
+state 187
+
+    (50) condicion1 -> SINO . bloque
+    (22) bloque -> . LCURLY bloque1 RCURLY
+
+    LCURLY          shift and go to state 87
+
+    bloque                         shift and go to state 191
+
+state 188
+
+    (51) condicion1 -> empty .
+
+    SI              reduce using rule 51 (condicion1 -> empty .)
+    REGRESA         reduce using rule 51 (condicion1 -> empty .)
+    LEE             reduce using rule 51 (condicion1 -> empty .)
+    ESCRIBE         reduce using rule 51 (condicion1 -> empty .)
+    ID              reduce using rule 51 (condicion1 -> empty .)
+    MIENTRAS        reduce using rule 51 (condicion1 -> empty .)
+    DESDE           reduce using rule 51 (condicion1 -> empty .)
+    RCURLY          reduce using rule 51 (condicion1 -> empty .)
+
+
+state 189
+
+    (55) nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI . HACER bloque
+
+    HACER           shift and go to state 192
+
+
+state 190
+
+    (56) nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER . bloque
+    (22) bloque -> . LCURLY bloque1 RCURLY
+
+    LCURLY          shift and go to state 87
+
+    bloque                         shift and go to state 193
+
+state 191
+
+    (50) condicion1 -> SINO bloque .
+
+    SI              reduce using rule 50 (condicion1 -> SINO bloque .)
+    REGRESA         reduce using rule 50 (condicion1 -> SINO bloque .)
+    LEE             reduce using rule 50 (condicion1 -> SINO bloque .)
+    ESCRIBE         reduce using rule 50 (condicion1 -> SINO bloque .)
+    ID              reduce using rule 50 (condicion1 -> SINO bloque .)
+    MIENTRAS        reduce using rule 50 (condicion1 -> SINO bloque .)
+    DESDE           reduce using rule 50 (condicion1 -> SINO bloque .)
+    RCURLY          reduce using rule 50 (condicion1 -> SINO bloque .)
+
+
+state 192
+
+    (55) nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER . bloque
+    (22) bloque -> . LCURLY bloque1 RCURLY
+
+    LCURLY          shift and go to state 87
+
+    bloque                         shift and go to state 194
+
+state 193
+
+    (56) nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .
+
+    SI              reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+    REGRESA         reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+    LEE             reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+    ESCRIBE         reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+    ID              reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+    MIENTRAS        reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+    DESDE           reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+    RCURLY          reduce using rule 56 (nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque .)
+
+
+state 194
+
+    (55) nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .
+
+    SI              reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+    REGRESA         reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+    LEE             reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+    ESCRIBE         reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+    ID              reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+    MIENTRAS        reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+    DESDE           reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+    RCURLY          reduce using rule 55 (nocondicional -> DESDE ID dimension EQUAL CTEI HASTA CTEI HACER bloque .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for RBRACKET in state 39 resolved as shift
+WARNING: shift/reduce conflict for EQUAL in state 141 resolved as shift
+WARNING: shift/reduce conflict for SEMICOLON in state 144 resolved as shift

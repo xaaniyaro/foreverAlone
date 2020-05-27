@@ -24,6 +24,19 @@ resultsLogic = {
             ('char','char') : 'bool'
         }
 
+resultsEqual = {
+            ('int','int') : 'int',
+            ('int','float') : 'err',
+            ('int','char') : 'err',
+            ('int', 'bool') : 'err',
+            ('float', 'float') : 'float',
+            ('float','bool') : 'err',
+            ('float', 'char') : 'err',
+            ('bool', 'bool') : 'bool',
+            ('bool','char') : 'err',
+            ('char','char') : 'char'
+            }
+
 operations = {'+' : resultsArith,
               '-' : resultsArith,
               '*' : resultsArith,
@@ -35,5 +48,6 @@ operations = {'+' : resultsArith,
               '>=' : resultsLogic,
               '<=' : resultsLogic,
               '==' : resultsLogic,
-              '!=' : resultsLogic
+              '!=' : resultsLogic,
+              '='  : resultsEqual
             }
