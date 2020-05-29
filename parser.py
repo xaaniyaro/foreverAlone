@@ -9,12 +9,20 @@ import interpreter
 
 tablaFunciones = {}
 funcCounter = 1
-firstVars = []
+firstVars = {}
 pilaOpd = stack.Stack()
 pilaTipos = stack.Stack()
 pilaOpr = stack.Stack()
 tempResult = 0
 pilaQuads = stack.Stack()
+
+#Direcciones virtuales
+mainDirections = 5000
+secondaryDirections = 8000
+cteDirections = 12000
+temporayNumDirections = 13000
+temporayBoolDirections = 14000
+#temporaryPointer = 21000
 
 class quad:
     def __init__(self, operator, leftOperand, rightOperand, result):
@@ -64,16 +72,28 @@ def printFuncTable():
         print(tablaFunciones[i].params)
         print(tablaFunciones[i].vars)
 
-def searchVar(varname):
+def searchVar(valueToFind):
     global tablaFunciones
     global funcCounter
     for k in range(1,funcCounter):
         vartype = None
-        for i in tablaFunciones[k].vars:
-            vartype = i[0]
-            for j in i[1]:
-                if j[0] == varname:
-                    return (varname, vartype, j[1])
+        listOfItems = tablaFunciones[k].vars.items()
+        for item  in listOfItems:
+            vartype = item[0]
+            for element in item[1]:
+                if element[0] == valueToFind:
+                    #type, id, value, memDir 
+                    return (vartype, element[0],element[1], element[2])
+
+def registerReturnFunc(funcId, funcT):
+    global tablaFunciones, mainDirections
+    vartype = None
+    dicc = tablaFunciones[1].vars
+    content = dicc[funcT]
+    newVar = (funcId, None, mainDirections)
+    content.append(newVar)
+    tablaFunciones[1].vars[funcT] = content
+    mainDirections += 1
 
 ##################### Parsing rules
 
@@ -124,7 +144,15 @@ def p_vars(p):
     global funcCounter
     global firstVars
     if funcCounter == 1:
-        firstVars = p[2]
+        dicc = {}
+        for i in p[2]:
+            if i[0] in dicc.keys():
+                past = dicc[i[0]]
+                past = past + i[1]
+                dicc[i[0]] = past
+            else:
+                dicc[i[0]] = i[1]
+        firstVars = dicc
     p[0] = p[2]
 
 def p_var1(p):
@@ -146,10 +174,30 @@ def p_var_decl(p):
     ''' var_decl :  ID
                 |   ID LBRACKET CTEI RBRACKET
                 |   ID LBRACKET exp RBRACKET'''
+    #Var definition (id, value, memDir, array)
+    global mainDirections, secondaryDirections, funcCounter
     if len(p) == 2:
-        p[0] = (p[1], None, None)
+        if funcCounter == 1:
+            p[0] = (p[1], None, mainDirections)
+            mainDirections += 1
+        else:
+            p[0] = (p[1], None, secondaryDirections)
+            secondaryDirections += 1
     else:
-        p[0] = (p[1], None, p[3])
+        if funcCounter == 1:
+            if isinstance(p[3], int):
+                p[0] = (p[1], None, mainDirections)
+                mainDirections += p[3]
+            else:
+                print("LIST SIZE ERROR")
+                exit()
+        else:
+            if isinstance(p[3], int):
+                p[0] = (p[1], None, secondaryDirections)
+                secondaryDirections += p[3]
+            else:
+                print("LIST SIZE ERROR")
+                exit()
 
 def p_lista_ids(p):
     '''lista_ids : lista_ids COMMA var_decl
@@ -177,20 +225,34 @@ def p_tipo(p):
 def p_func_declarations(p):
     '''func_declarations : func_decl func_declarations
                         | empty'''
-    global funcCounter
-    global tablaFunciones
+    global funcCounter, tablaFunciones, secondaryDirections
+    # nombre, tipo, params, vars
     if p[1] != None:
         newfunc = funcion(p[1][0], p[1][1],p[1][2],p[1][3])
         tablaFunciones[funcCounter] = newfunc
         funcCounter = funcCounter + 1
-    
+        secondaryDirections = 8000
+        registerReturnFunc(p[1][0], p[1][1])
 
 def p_func_decl(p):
     '''func_decl : FUNCION func2 ID LPAREN params RPAREN vars bloque'''
+    global secondaryDirections
     if bool(checkDuplicateFuncs(p[3])):
         exit()
     else:
-        p[0] = (p[3], p[2], p[5], p[7])
+        dicc = {}
+        updateList = []
+        for i in p[7]:
+            dicc[i[0]] = i[1]
+        for i in p[5]:
+            currID = i[1]
+            currType = i[0]
+            for key in dicc:
+                if key == currType:
+                    dicc[key].append((currID, None, secondaryDirections)) 
+            updateList.append(currType)
+        #nombre, tipo, params, vars
+        p[0] = (p[3], p[2], updateList, dicc)
     
 
 def p_func2(p):
@@ -226,14 +288,14 @@ def p_asig(p):
 ##### MAIN
 
 def p_main(p):
-    'main : PRINCIPAL LPAREN RPAREN bloque'
-    #'main : printfuncs PRINCIPAL LPAREN RPAREN bloque'
+    #'main : PRINCIPAL LPAREN RPAREN bloque'
+    'main : printfuncs PRINCIPAL LPAREN RPAREN bloque'
 
 ##### PARAMS
 
 def p_param_decl(p):
     'param_decl : tipo ID'
-    p[0] = (p[1], None, p[2])
+    p[0] = (p[1], p[2])
 
 def p_params(p):
     '''params : params COMMA param_decl
@@ -359,24 +421,25 @@ def p_exp2(p):
 def p_mexp(p):
     'mexp : termino mexp1'
     global pilaOpr, tempResult, pilaQuads
-    if pilaOpr.peek() == '+' or pilaOpr.peek() == '-':
-        rOpd = pilaOpd.pop()
-        rType = pilaTipos.pop()
-        lOpd = pilaOpd.pop()
-        lType = pilaTipos.pop()
-        operator = pilaOpr.pop()
-        resultType = interpreter.operations[operator,(lType,rType)]
-        if(resultType != 'err'):
-            tempResult = tempResult + 1
-            quadObj = quad(operator, lOpd, rOpd, tempResult)
-            pilaQuads(quadObj)
-            pilaOpd.push(tempResult)
-            pilaTipos.push(resultType)
-            if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
-                tempResult = tempResult - 1
-    else:
-        print("TYPE MISMATCH")
-        exit()
+    '''if pilaOpr.items != []:
+        if pilaOpr.peek() == '+' or pilaOpr.peek() == '-':
+            rOpd = pilaOpd.pop()
+            rType = pilaTipos.pop()
+            lOpd = pilaOpd.pop()
+            lType = pilaTipos.pop()
+            operator = pilaOpr.pop()
+            resultType = interpreter.operations[operator][(lType,rType)]
+            if(resultType != 'err'):
+                tempResult = tempResult + 1
+                quadObj = quad(operator, lOpd, rOpd, tempResult)
+                pilaQuads.push(quadObj)
+                pilaOpd.push(tempResult)
+                pilaTipos.push(resultType)
+                if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
+                    tempResult = tempResult - 1
+            else:
+                print("TYPE MISMATCH")
+                exit()'''
 
 
 def p_mexp1(p):
@@ -396,24 +459,25 @@ def p_mexp2(p):
 def p_termino(p):
     'termino : factor termino1'
     global pilaOpr, tempResult, pilaQuads
-    if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
-        rOpd = pilaOpd.pop()
-        rType = pilaTipos.pop()
-        lOpd = pilaOpd.pop()
-        lType = pilaTipos.pop()
-        operator = pilaOpr.pop()
-        resultType = interpreter.operations[operator,(lType,rType)]
-        if(resultType != 'err'):
-            tempResult = tempResult + 1
-            quadObj = quad(operator, lOpd, rOpd, tempResult)
-            pilaQuads(quadObj)
-            pilaOpd.push(tempResult)
-            pilaTipos.push(resultType)
-            if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
-                tempResult = tempResult - 1
-    else:
-        print("TYPE MISMATCH")
-        exit()
+    '''if pilaOpr.items != []:
+        if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
+            rOpd = pilaOpd.pop()
+            rType = pilaTipos.pop()
+            lOpd = pilaOpd.pop()
+            lType = pilaTipos.pop()
+            operator = pilaOpr.pop()
+            resultType = interpreter.operations[operator][(lType,rType)]
+            if(resultType != 'err'):
+                tempResult = tempResult + 1
+                quadObj = quad(operator, lOpd, rOpd, tempResult)
+                pilaQuads.push(quadObj)
+                pilaOpd.push(tempResult)
+                pilaTipos.push(resultType)
+                if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
+                    tempResult = tempResult - 1
+            else:
+                print("TYPE MISMATCH")
+                exit()'''
 
 def p_termino1(p):
     '''termino1 : TIMES factor termino1
@@ -432,7 +496,7 @@ def p_factor(p):
                 | llamada'''
     global pilaOpd
     global pilaTipos
-    if len(p) < 3:   
+    '''if len(p) < 3:   
         if isinstance(p[1],(int)):
             pilaOpd.push(p[1])
             pilaTipos.push('int')
@@ -440,12 +504,12 @@ def p_factor(p):
             pilaOpd.push(p[1])
             pilaTipos.push('float')
         else:
-            #varTuple = (varname, vartype, varvalue)
+            #varTuple = (vartype, varname, value, memDir)
             varTuple = searchVar(p[1])
             if varTuple != None:
                 pilaOpd.push(varTuple[0])
                 pilaTipos.push(varTuple[1])
-            # TO-DO: handle when a 'llamada' es registrada
+            # TO-DO: handle when a 'llamada' es registrada'''
     
 
 ###### VARIABLE
@@ -484,9 +548,9 @@ def p_varcte(p):
     while pilaTipos.is_empty() != True:
         print(pilaTipos.pop())'''
 
-#def p_printfuncs(p):
-#    'printfuncs : empty'
-#    printFuncTable()
+def p_printfuncs(p):
+    'printfuncs : empty'
+    printFuncTable()
 
 parser = yacc.yacc()
 
