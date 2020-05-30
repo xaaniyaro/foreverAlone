@@ -6,23 +6,28 @@ import codecs
 import collections
 import stack
 import interpreter
+import tNames
 
 tablaFunciones = {}
+tablaConstantes = {}
+tablaTemporales = {}
+tablaTemporalesBool = {}
+tablaTemporalesPointer = {}
 funcCounter = 1
 firstVars = {}
 pilaOpd = stack.Stack()
 pilaTipos = stack.Stack()
 pilaOpr = stack.Stack()
-tempResult = 0
 pilaQuads = stack.Stack()
+avail = tNames.tnames()
 
-#Direcciones virtuales
+############### Direcciones virtuales
 mainDirections = 5000
 secondaryDirections = 8000
 cteDirections = 12000
 temporayNumDirections = 13000
 temporayBoolDirections = 14000
-#temporaryPointer = 21000
+temporaryPointer = 21000
 
 class quad:
     def __init__(self, operator, leftOperand, rightOperand, result):
@@ -124,8 +129,8 @@ def p_error(p):
 ##### PROGRAMA
 
 def p_programa(p):
-    'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main'
-    #'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks'
+    #'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main'
+    'programa : PROGRAMA ID SEMICOLON vars createTable func_declarations main showstacks'
 
 def p_createTable(p):
     'createTable : empty'
@@ -288,8 +293,8 @@ def p_asig(p):
 ##### MAIN
 
 def p_main(p):
-    #'main : PRINCIPAL LPAREN RPAREN bloque'
-    'main : printfuncs PRINCIPAL LPAREN RPAREN bloque'
+    'main : PRINCIPAL LPAREN RPAREN bloque'
+    #'main : printfuncs PRINCIPAL LPAREN RPAREN bloque'
 
 ##### PARAMS
 
@@ -375,6 +380,31 @@ def p_nocondicional(p):
 
 def p_exp(p):
     'exp : texp exp1'
+    global pilaOpr, temporayBoolDirections, pilaQuads, tablaTemporalesBool
+    if pilaOpr.items != []:
+        if pilaOpr.peek() == '|':
+            rOpd = pilaOpd.pop()
+            rType = pilaTipos.pop()
+            lOpd = pilaOpd.pop()
+            lType = pilaTipos.pop()
+            operator = pilaOpr.pop()
+            resultType = interpreter.operations[operator][(lType,rType)]
+            if(resultType != 'err'):
+                tablaTemporalesBool[temporayBoolDirections] = avail.next()
+                temporayBoolDirections = temporayBoolDirections + 1
+                quadObj = quad(operator, lOpd, rOpd, temporayBoolDirections)
+                pilaQuads.push(quadObj)
+                pilaOpd.push(temporayBoolDirections)
+                pilaTipos.push(resultType)
+                '''if lOpd > 13999 and lOpd < 14999:
+                    tablaTemporalesBool.pop(lOpd)
+                    temporayBoolDirections =- 1
+                if rOpd > 13999 and lOpd < 14999:
+                    tablaTemporalesBool.pop(rOpd)
+                    temporayBoolDirections =- 1'''
+            else:
+                print("TYPE MISMATCH")
+                exit()
 
 def p_exp1(p):
     '''exp1 : OR texp exp1
@@ -387,6 +417,31 @@ def p_exp1(p):
 
 def p_texp(p):
     'texp : gexp texp1'
+    global pilaOpr, temporayBoolDirections, pilaQuads, tablaTemporalesBool
+    if pilaOpr.items != []:
+        if pilaOpr.peek() == '&':
+            rOpd = pilaOpd.pop()
+            rType = pilaTipos.pop()
+            lOpd = pilaOpd.pop()
+            lType = pilaTipos.pop()
+            operator = pilaOpr.pop()
+            resultType = interpreter.operations[operator][(lType,rType)]
+            if(resultType != 'err'):
+                tablaTemporalesBool[temporayBoolDirections] = avail.next()
+                temporayBoolDirections = temporayBoolDirections + 1
+                quadObj = quad(operator, lOpd, rOpd, temporayBoolDirections)
+                pilaQuads.push(quadObj)
+                pilaOpd.push(temporayBoolDirections)
+                pilaTipos.push(resultType)
+                '''if lOpd > 13999 and lOpd < 14999:
+                    tablaTemporalesBool.pop(lOpd)
+                    temporayBoolDirections =- 1
+                if rOpd > 13999 and lOpd < 14999:
+                    tablaTemporalesBool.pop(rOpd)
+                    temporayBoolDirections =- 1'''
+            else:
+                print("TYPE MISMATCH")
+                exit()
 
 def p_texp1(p):
     '''texp1 : AND gexp texp1
@@ -399,6 +454,32 @@ def p_texp1(p):
 
 def p_gexp(p):
     'gexp : mexp gexp1'
+    global pilaOpr, temporayBoolDirections, pilaQuads, tablaTemporalesBool
+    if pilaOpr.items != []:
+        logic = ['>','<','>=','<=','==', '!=']
+        if pilaOpr.peek() in logic:
+            rOpd = pilaOpd.pop()
+            rType = pilaTipos.pop()
+            lOpd = pilaOpd.pop()
+            lType = pilaTipos.pop()
+            operator = pilaOpr.pop()
+            resultType = interpreter.operations[operator][(lType,rType)]
+            if(resultType != 'err'):
+                tablaTemporalesBool[temporayBoolDirections] = avail.next()
+                temporayBoolDirections = temporayBoolDirections + 1
+                quadObj = quad(operator, lOpd, rOpd, temporayBoolDirections)
+                pilaQuads.push(quadObj)
+                pilaOpd.push(temporayBoolDirections)
+                pilaTipos.push(resultType)
+                '''if lOpd > 13999 and lOpd < 14999:
+                    tablaTemporalesBool.pop(lOpd)
+                    temporayBoolDirections =- 1
+                if rOpd > 13999 and lOpd < 14999:
+                    tablaTemporalesBool.pop(rOpd)
+                    temporayBoolDirections =- 1'''
+            else:
+                print("TYPE MISMATCH")
+                exit()
 
 def p_gexp1(p):
     '''gexp1 : gexp2 mexp gexp1
@@ -420,8 +501,8 @@ def p_exp2(p):
 
 def p_mexp(p):
     'mexp : termino mexp1'
-    global pilaOpr, tempResult, pilaQuads
-    '''if pilaOpr.items != []:
+    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales
+    if pilaOpr.items != []:
         if pilaOpr.peek() == '+' or pilaOpr.peek() == '-':
             rOpd = pilaOpd.pop()
             rType = pilaTipos.pop()
@@ -430,16 +511,21 @@ def p_mexp(p):
             operator = pilaOpr.pop()
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
-                tempResult = tempResult + 1
-                quadObj = quad(operator, lOpd, rOpd, tempResult)
+                tablaTemporales[temporayNumDirections] = avail.next()
+                temporayNumDirections = temporayNumDirections + 1
+                quadObj = quad(operator, lOpd, rOpd, temporayNumDirections)
                 pilaQuads.push(quadObj)
-                pilaOpd.push(tempResult)
+                pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
-                if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
-                    tempResult = tempResult - 1
+                '''if lOpd > 12999 and lOpd < 13999:
+                    tablaTemporales.pop(lOpd)
+                    temporayNumDirections =- 1
+                if rOpd > 12999 and rOpd < 13999:
+                    tablaTemporales.pop(rOpd)
+                    temporayNumDirections =- 1'''
             else:
                 print("TYPE MISMATCH")
-                exit()'''
+                exit()
 
 
 def p_mexp1(p):
@@ -458,8 +544,8 @@ def p_mexp2(p):
 
 def p_termino(p):
     'termino : factor termino1'
-    global pilaOpr, tempResult, pilaQuads
-    '''if pilaOpr.items != []:
+    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales
+    if pilaOpr.items != []:
         if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
             rOpd = pilaOpd.pop()
             rType = pilaTipos.pop()
@@ -468,16 +554,21 @@ def p_termino(p):
             operator = pilaOpr.pop()
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
-                tempResult = tempResult + 1
-                quadObj = quad(operator, lOpd, rOpd, tempResult)
+                tablaTemporales[temporayNumDirections] = avail.next()
+                temporayNumDirections = temporayNumDirections + 1
+                quadObj = quad(operator, lOpd, rOpd, temporayNumDirections)
                 pilaQuads.push(quadObj)
-                pilaOpd.push(tempResult)
+                pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
-                if isinstance(lOpd, (int)) or isinstance(rOpd, (int)):
-                    tempResult = tempResult - 1
+                '''if lOpd > 12999 and lOpd < 13999:
+                    tablaTemporales.pop(lOpd)
+                    temporayNumDirections =- 1
+                if rOpd > 12999 and rOpd < 13999:
+                    tablaTemporales.pop(rOpd)
+                    temporayNumDirections =- 1'''
             else:
                 print("TYPE MISMATCH")
-                exit()'''
+                exit()
 
 def p_termino1(p):
     '''termino1 : TIMES factor termino1
@@ -494,21 +585,24 @@ def p_factor(p):
                 | varcte
                 | variable
                 | llamada'''
-    global pilaOpd
-    global pilaTipos
-    '''if len(p) < 3:   
+    global pilaOpd, pilaQuads, pilaTipos, cteDirections, tablaConstantes
+    if len(p) < 3:   
         if isinstance(p[1],(int)):
-            pilaOpd.push(p[1])
+            tablaConstantes[cteDirections] = p[1]
+            pilaOpd.push(cteDirections)
+            cteDirections += 1
             pilaTipos.push('int')
         elif isinstance(p[1],(float)):
-            pilaOpd.push(p[1])
+            tablaConstantes[cteDirections] = p[1]
+            pilaOpd.push(cteDirections)
+            cteDirections += 1
             pilaTipos.push('float')
         else:
             #varTuple = (vartype, varname, value, memDir)
             varTuple = searchVar(p[1])
             if varTuple != None:
-                pilaOpd.push(varTuple[0])
-                pilaTipos.push(varTuple[1])
+                pilaOpd.push(varTuple[3])
+                pilaTipos.push(varTuple[0])
             # TO-DO: handle when a 'llamada' es registrada'''
     
 
@@ -532,25 +626,29 @@ def p_varcte(p):
                 | CTEC '''
     p[0] = p[1]
 
-'''def p_showstacks(p):
+def p_showstacks(p):
     'showstacks : empty'
     global pilaOpd, pilaOpr, pilaTipos
     
-    print("Pila operandos")
-    while pilaOpd.is_empty() != True:
-        print(pilaOpd.pop())
+    print("Pila quads")
+    while pilaQuads.is_empty() != True:
+        curr = pilaQuads.pop()
+        print("1: " + str(curr.operator))
+        print("2: " + str(curr.leftOperand))
+        print("3: " + str(curr.rightOperand))
+        print("4: " + str(curr.result))
 
-    print("Pila operadores")
-    while pilaOpr.is_empty() != True:
-        print(pilaOpr.pop())
+    #print("Pila operadores")
+    #while pilaOpr.is_empty() != True:
+    #    print(pilaOpr.pop())
         
-    print("Pila tipos")
-    while pilaTipos.is_empty() != True:
-        print(pilaTipos.pop())'''
+    #print("Pila tipos")
+    #while pilaTipos.is_empty() != True:
+    #    print(pilaTipos.pop())
 
-def p_printfuncs(p):
-    'printfuncs : empty'
-    printFuncTable()
+#def p_printfuncs(p):
+#    'printfuncs : empty'
+#    printFuncTable()
 
 parser = yacc.yacc()
 
