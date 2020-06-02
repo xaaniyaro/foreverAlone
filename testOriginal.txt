@@ -18,9 +18,15 @@ principal ( )
 { 
     inicia(p * j - 5) ;
     desde i=0 hasta 9 hacer 
-        { Arreglo [ i ]= Arreglo [ i ] * fact (Arreglo [ i ] - p); }
+        { Arreglo [ i ]= Arreglo [ i ] * fact (Arreglo [ i ] - p); ; }
+    desde i=0 hasta 9 hacer 
+        { OtroArreglo [ i ] = Arreglo [ i ] - p; }
+    mientras ( i >= 0) haz
+        { escribe ("resultado", Arreglo [ i ] , fact ( i + 2) * valor ) ;
+            i = i - 1;
+         } 
     mientras (i < 10) haz
-        {
+        { escribe ("Otros datos" , OtroArreglo [ i ] , p, i + OtroArreglo[i] ) ;
             i = i + 1;
         }
 } 
