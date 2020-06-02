@@ -14,7 +14,6 @@ tablaTemporales = {}
 tablaTemporalesBool = {}
 tablaTemporalesPointer = {}
 funcCounter = 1
-quadCounter = 1
 startFunc = 0
 parameterCounter = 1
 firstVars = {}
@@ -23,7 +22,7 @@ currF = ""
 pilaOpd = stack.Stack()
 pilaTipos = stack.Stack()
 pilaOpr = stack.Stack()
-pilaQuads = stack.Stack()
+pilaQuads = Quadruple()
 pilaSaltos = stack.Stack()
 pilaParams = stack.Stack()
 avail = tNames.tnames()
@@ -36,19 +35,22 @@ temporayNumDirections = 13000
 temporayBoolDirections = 14000
 temporaryPointer = 21000
 
-class quad:
+class Quadruple:
     
-    def __init__(self, label, leftOperand, rightOperand, result):
-        self.label = label
-        self.leftOperand = leftOperand
-        self.rightOperand = rightOperand
-        self.result = result
+    def __init__(self):
+        items = []
+        contador = 1
 
-    def fill(self, content):
-        if self.result == None:
-            self.result = content
+    def generate(self, label, lOpd, rOpd, result):
+        newQuad = [label, lOpd, rOpd, result]
+        self.items.append(newQuad)
+        contador += 1
+
+    def fill(self, index, content):
+        if self.items[index][3] == None:
+            self.items[index][3] = content
         else:
-            print("Hubo un problema rellenando un cuadruplo con etiqueta: " + self.label)
+            print("Wrong quadruple")
 
 class funcion:
     def __init__(self, name, functype, params, vars, position):
@@ -815,7 +817,8 @@ def p_exp2(p):
 
 def p_mexp(p):
     'mexp : termino mexp1'
-    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales
+    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales, pilaOpd
+    global pilaTipos, quadCounter
     if pilaOpr.items != []:
         if pilaOpr.peek() == '+' or pilaOpr.peek() == '-':
             rOpd = pilaOpd.pop()
@@ -829,6 +832,7 @@ def p_mexp(p):
                 temporayNumDirections = temporayNumDirections + 1
                 quadObj = quad(operator, lOpd, rOpd, temporayNumDirections)
                 pilaQuads.push(quadObj)
+                quadCounter += 1
                 pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
                 '''if lOpd > 12999 and lOpd < 13999:
@@ -858,7 +862,8 @@ def p_mexp2(p):
 
 def p_termino(p):
     'termino : factor termino1'
-    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales
+    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales, pilaTipos, pilaOpd
+    global quadCounter
     if pilaOpr.items != []:
         if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
             rOpd = pilaOpd.pop()
@@ -872,6 +877,7 @@ def p_termino(p):
                 temporayNumDirections = temporayNumDirections + 1
                 quadObj = quad(operator, lOpd, rOpd, temporayNumDirections)
                 pilaQuads.push(quadObj)
+                quadCounter += 1
                 pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
                 '''if lOpd > 12999 and lOpd < 13999:
