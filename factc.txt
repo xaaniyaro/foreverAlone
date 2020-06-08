@@ -1,0 +1,15 @@
+programa factorial;
+var
+    int fact;
+
+funcion void factorial()
+    {
+        desde i = 1 hasta 9 hacer
+        {fact = fact *i;}   
+    }
+
+principal (){
+    fact = 1;
+    calculate();
+    ESCRIBE(fact);
+}

@@ -1,0 +1,31 @@
+programa sorter;
+var 
+    vector[3];
+
+funcion void sort(int n)
+var
+int i, j, min, temp;    
+    {   i = 0;
+        mientras(i < n - 1) haz
+        {
+            min = i;
+            j = i + 1;
+            mientras(j < n) haz
+            {
+                if(vector[j] < vector[min]) entonces
+                {min = j;}
+                temp = vector[i];
+                vector[i] = vector[min];
+                vector[min] = temp;
+            }
+        }
+    }
+
+principal(){
+    vector[0] = 2;
+    vector[1] = 4;
+    vector[2] = 1;
+    sort(3);
+    desde i = 0 hasta 3 hacer
+    {escribir(vector[i]);}
+}

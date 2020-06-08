@@ -1,0 +1,26 @@
+program fibonacci;
+
+funcion void calculate()
+var 
+    int t1, t2, next;
+    {
+        t1 = 0;
+        t2 = 1;
+        next = 0;
+
+        ESCRIBE(t1, " ");
+        ESCRIBE(t2, " ");
+        next = t1 + t2;
+
+        mientras (next <= 100) haz
+        { ESCRIBE(next, " ");  
+            t1 = t2;
+            t2 = next;
+            next = t1 + t2;
+        }
+
+    }
+
+principal(){
+    calculate();
+}

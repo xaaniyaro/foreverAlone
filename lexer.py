@@ -1,6 +1,8 @@
-#Ivan Contreras Rodriguez
-#A01540379
-#ForeverAlone
+#Analizar lexico del lenguaje ForeverAlone 
+# contiene todas las reglas necesarias para definir las expresiones regulares 
+# para identificar cierto tipo de tokens.
+# Cuenta con una funcion para imprimir los tokens que se han detectado hasta ahora
+# permite identificar de forma mas rapida los errores sintacticos
 
 import codecs
 

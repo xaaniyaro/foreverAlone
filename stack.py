@@ -1,3 +1,5 @@
+#Clase para implementar todas las operaciones basicas de una pila
+
 class Stack:
     def __init__(self):
         self.items = []

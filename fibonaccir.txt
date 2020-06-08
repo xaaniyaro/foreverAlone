@@ -1,0 +1,17 @@
+program fibocacci;
+var 
+    int n;
+
+function int calc(int n)
+{
+    if( n == 1 | n == 2) entonces
+    {regresa(1);}
+    sino
+    {regresa( calc(n - 1) + calc(n - 2));}
+}
+
+principal(){
+    ESCRIBE("INTRODUCE UN NUMERO ENTERO POSITIVO:");
+    LEE(n);
+    ESCRIBE(calc(n));
+}

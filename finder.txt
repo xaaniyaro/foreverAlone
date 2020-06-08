@@ -1,0 +1,23 @@
+programa finder;
+var 
+    vector[3];
+
+funcion int find(int n)
+    {
+        desde i = 0 hasta 2 hacer
+        {si (vector[i] == n) entonces
+            {return 1;}
+        sino
+            {return 0;}
+        }   
+    }
+
+principal(){
+    vector[0] = 2;
+    vector[1] = 4;
+    vector[2] = 1;
+    si (find(1)) entonces
+    {escribir("Elemento encontrado");}
+    sino
+    {escribir("No existe el elemento");}
+}

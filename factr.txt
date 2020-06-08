@@ -1,6 +1,6 @@
 programa factorial;
 var 
-    int num;
+    int n;
 
 funcion int factorial (int n)
     {
@@ -13,6 +13,6 @@ funcion int factorial (int n)
 principal ( ) 
 { 
    escribe("INTRODUCE UN NUMERO:");
-   lee(num);
-   escribe("EL RESULTADO ES:", num);
+   lee(n);
+   escribe("EL RESULTADO ES:", factorial(n));
 } 

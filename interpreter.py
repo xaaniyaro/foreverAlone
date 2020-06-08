@@ -1,3 +1,6 @@
+#Cubo semantico, contiene registros para todos los operadores, detecta conflictos de 
+# operaciones entre diferentes tipos de datos
+
 resultsArith = {
             ('int','int') : 'int',
             ('int','float') : 'float',

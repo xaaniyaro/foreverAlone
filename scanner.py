@@ -8,6 +8,7 @@ import stack
 import interpreter
 import tNames
 import quadruple
+from vm import runcode
 
 # Modulo del parser, incluye todas las funciones necesarias para buscar, identificar y registrar variables y funciones
 # Parsea el programa que se le provea de input
@@ -18,6 +19,7 @@ tablaFunciones = {}
 tablaConstantes = {}
 tablaTemporales = {}
 tablaTemporalesBool = {}
+tablaFinal = {}
 tablaTemporalesPointer = {}
 funcCounter = 1
 startFunc = 0
@@ -131,14 +133,13 @@ def searchVar(valueToFind):
                     if element[0] == valueToFind:
                         #type, id, value, memDir 
                         return (vartype, element[0],element[1], element[2])
-        else:
-            listOfItems = tablaFunciones[1].vars.items()
-            for item  in listOfItems:
-                vartype = item[0]
-                for element in item[1]:
-                    if element[0] == valueToFind:
-                        #type, id, value, memDir 
-                        return (vartype, element[0],element[1], element[2])
+    listOfItems = tablaFunciones[1].vars.items()
+    for item  in listOfItems:
+        vartype = item[0]
+        for element in item[1]:
+            if element[0] == valueToFind:
+                #type, id, value, memDir 
+                return (vartype, element[0],element[1], element[2])
 
 def registerReturnFunc(funcId, funcT):
     global tablaFunciones, mainDirections
@@ -166,6 +167,17 @@ def getKeysByValue(dictOfElements, valueToFind):
             return (True, item[0])
     return None
     
+def exportVars():
+    global funcCounter, tablaFunciones
+    newDicc = {}
+    
+    for i in range(1,funcCounter):
+        curr = tablaFunciones[i].vars
+        for key in curr:
+            currList = curr[key]
+            for elem in currList:
+                newDicc[elem[2]] = elem[0]
+    return newDicc
 
 def addToTable(tableName, varvalue):
     global tablaFunciones, tablaConstantes, tablaTemporales
@@ -176,7 +188,7 @@ def addToTable(tableName, varvalue):
         ver = getKeysByValue(tablaConstantes, varvalue)
         if ver != None:
             if ver[0] == True:
-                print("Variable ya existe")
+                #print("Variable ya existe")
                 return ver[1] #regresa la dirV de la variable
         else:
             tablaConstantes[cteDirections] = varvalue
@@ -187,18 +199,18 @@ def addToTable(tableName, varvalue):
         ver = getKeysByValue(tablaTemporales, varvalue)
         if ver != None:
             if ver[0] == True:
-                print("Variable ya existe")
+                #print("Variable ya existe")
                 return ver[1] #regresa la dirV de la variable
         else:
             tablaTemporales[temporayNumDirections] = varvalue
-            temporayNumDirections += 1
-            return temporayNumDirections - 1
+            temporayNumDirections
+            return temporayNumDirections
 
     elif tableName == 'bool':
         ver = getKeysByValue(tablaTemporalesBool, varvalue)
         if ver != None:
             if ver[0] == True:
-                print("Variable ya existe")
+                #print("Variable ya existe")
                 return ver[1] #regresa la dirV de la variable
         else:
             tablaTemporalesBool[temporayBoolDirections] = varvalue
@@ -246,6 +258,7 @@ def p_addMain(p):
     'addMain : empty'
     global pilaQuads
     pilaSaltos.push(pilaQuads.contador)
+    #print(pilaQuads.contador)
     pilaQuads.generate('GOTO', None, None, None)
 
 def p_createTable(p):
@@ -380,13 +393,13 @@ def p_func_decl(p):
             #nombre, tipo, params, vars
             p[0] = (p[3], p[2], updateList, dicc)
         elif len(p) > 8:
-            print(p[4],p[5],p[6],p[7])
+            #print(p[4],p[5],p[6],p[7])
             if p[5] != ')':
                 dicc = {}
                 dicc['int'] = []
                 updateList = []
                 for i in p[5]:
-                    print(i)
+                    #print(i)
                     currID = i[1]
                     currType = i[0]
                     for key in dicc:
@@ -452,6 +465,8 @@ def p_addVar(p):
     'addVar : '
     global pilaOpd, pilaTipos
     currVar = p[-1]
+    #print(currVar)
+    #print("Agregando una asignacion {}".format(currVar))
     pilaOpd.push(currVar[3])
     pilaTipos.push(currVar[0])
 
@@ -463,40 +478,29 @@ def p_addAsig(p):
 def p_genAsig(p):
     'genAsig : '
     global pilaOpd, pilaTipos, pilaOpr, pilaQuads
-    if not pilaOpd.is_empty():
-        if pilaOpd.peek() == '=':
-            oper = pilaOpr.pop()
-            lopd = pilaOpd.pop()
-            lopd_type = pilaTipos.pop()
-            ropd = pilaOpd.pop()
-            ropd_type = pilaTipos.pop()
-            if interpreter.operations[operator][(lopd_type,ropd_type)] != 'err':
-                pilaQuads.generate(operator, lopd, None, ropd)
-            else:
-                print("TYPE MISMATCH")
-                exit()
-
-'''def regAsig(p):
-    'regAsig :'
-    global pilaQuads, pilaOpd
-    opd = pilaOpd.pop()
-    opd_type = pilaTipos.pop()
-    var = p[1]
-    if interpreter.operations['='][(opd_type,var[0])] != 'err':
-        pilaQuads.generate('=', opd, None, var[3])
-        #print(pilaQuads.contador)'''
+    if pilaOpr.peek() == '=':
+        #print("Generando asignacion")
+        oper = pilaOpr.pop()
+        rOpd = pilaOpd.pop()
+        rType = pilaTipos.pop()
+        if interpreter.operations[oper][(p[-5][0], rType)] != 'err':
+            pilaQuads.generate(oper, rOpd, None, p[-5][3])
+        else:
+            print("TYPE MISMATCH")
+            exit()
 
 ##### MAIN
 
 def p_main(p):
-    #'main : PRINCIPAL LPAREN RPAREN fillFirst bloque'
+    #'main : PRINCIPAL LPAREN RPAREN fillFirst bloque mergetables'
     'main : printfuncs PRINCIPAL LPAREN RPAREN fillFirst bloque'
 
 def p_fillFirst(p):
     'fillFirst : empty'
     global pilaSaltos, currF
     currF = 'main'
-    #pilaQuads.items[0].fill(pilaQuads.contador)
+    pilaQuads.fill(0,pilaQuads.contador)
+    #print(pilaQuads.contador)
     #print("PRIMER CUADRUPLO")
     #print("1: " + str(hola.label))
     #print("2: " + str(hola.leftOperand))
@@ -570,10 +574,10 @@ def p_endLlamada(p):
     global pilaQuads, parameterCounter
     position = getFuncDirection(p[-2])
     if position != None:
-        print("La funcion tiene posicion")
+        #print("La funcion tiene posicion")
         pilaQuads.generate('GOSUB', p[-2], None, position)
     else:
-        print("Tomando el start de la funcion")
+        #print("Tomando el start de la funcion")
         pilaQuads.generate('GOSUB', p[-2], None, startFunc)
     parameterCounter = 1
 
@@ -597,8 +601,12 @@ def p_escritura1(p):
 def p_escritura2_a(p):
     '''escritura2 : escritura1 COMMA escritura2
                 | escritura1'''
-    global pilaQuads
-    pilaQuads.generate('PRINT', None, None, p[1])
+    global pilaQuads, pilaOpd
+    if pilaOpd.is_empty():
+        vardir = addToTable('ctes',p[1])
+    else:
+        vardir = pilaOpd.pop()
+    pilaQuads.generate('PRINT', None, None, vardir)
 
 ##### CONDICION
 
@@ -615,12 +623,13 @@ def p_cond1(p):
         result = pilaOpd.pop()
         pilaQuads.generate('GOTOF',result,None,None)
         pilaSaltos.push(pilaQuads.contador)
+        #print(pilaQuads.contador)
 
 def p_cond2(p):
     'cond2 : empty'
     global pilaSaltos
     end = pilaSaltos.pop()
-    #pilaQuads.items[end].fill(pilaQuads.contador)
+    pilaQuads.fill(end, pilaQuads.contador)
 
 def p_elsePart(p):
     '''elsePart : SINO elseActions bloque
@@ -632,7 +641,8 @@ def p_elseActions(p):
     pilaQuads.generate('GOTO', None,None,None)
     false = pilaSaltos.pop()
     pilaSaltos.push(pilaQuads.contador)
-    #pilaQuads.items[false].fill(pilaQuads.contador)
+    #print(pilaQuads.contador)
+    pilaQuads.items[false].fill(pilaQuads.contador)
 
 ##### REPETICION
 
@@ -649,6 +659,7 @@ def p_regWhile(p):
     'regWhile : empty'
     global pilaSaltos, pilaQuads
     pilaSaltos.push(pilaQuads.contador)
+    #print(pilaQuads.contador)
 
 def p_whileCond(p):
     'whileCond : empty'
@@ -660,6 +671,7 @@ def p_whileCond(p):
         result = pilaOpd.pop()
         pilaQuads.generate('GOTOF', result, None, None)
         pilaSaltos.push(pilaQuads.contador)
+        #print(pilaQuads.contador)
 
 def p_endWhile(p):
     'endWhile : empty'
@@ -685,6 +697,7 @@ def p_createFor(p):
     pilaQuads.generate('=', varEnd, None, basevar)
     varIni = addToTable('ctes', p[-1])
     pilaSaltos.push(pilaQuads.contador)
+    #print(pilaQuads.contador)
     varbool = addToTable('bool', avail.next())
     pilaQuads.generate('<', basevar, varIni, varbool)
     pilaQuads.generate('GOTOV', varbool, None, None)
@@ -692,18 +705,20 @@ def p_createFor(p):
 def p_endFor(p):
     'endFor : '
     global pilaQuads, pilaSaltos, tablaConstantes, temporayNumDirections
-    vartuple = searchVar(p[-8])
+    #print(p[-8])
+    #vartuple = searchVar(p[-8])
+    vardir = addToTable('num',p[-8])
+    #print("Imprimiendo tupla de variable")
+    #print(vartuple)
     
-    print(tablaConstantes)
-    print(tablaTemporales)
-    print(tablaTemporalesBool)
+    onedir = getKeysByValue(tablaConstantes,1)
+    #print("Imprimiendo direccion de 1: {}".format(onedir))
+    temporayNumDirections += 1
+    tablaTemporales[temporayNumDirections] = avail.next()
+    pilaQuads.generate('+', vardir, onedir[1], temporayNumDirections)
+    pilaQuads.generate('=', temporayNumDirections, None, vardir)
     
-    #onevar = getKeysByValue(tablaConstantes,'1')
-    #print(onevar)
-    #pilaQuads.generate('+', vartuple[3], onevar, temporayNumDirections)
-    
-    #pilaQuads.generate('=', temporayNumDirections, None, vartuple[3])
-    #temporayNumDirections += 1
+
 
     start = pilaSaltos.pop()
     pilaQuads.generate('GOTO', None, None, start)
@@ -711,7 +726,11 @@ def p_endFor(p):
     #print(pilaQuads.contador)
     #print("Size de la quadPila ->")
     #print(len(pilaQuads.items))
-    #pilaQuads.fill('Por rellenar')
+    pilaQuads.fill(start, pilaQuads.contador)
+
+    #print(tablaConstantes)
+    #print(tablaTemporales)
+    #print(tablaTemporalesBool)
 
 ##### EXP
 
@@ -835,8 +854,7 @@ def p_gexp2(p):
 
 def p_mexp(p):
     'mexp : termino mexp1'
-    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales, pilaOpd
-    global pilaTipos
+    global pilaOpr, temporayNumDirections, pilaQuads, tablaTemporales, pilaOpd, pilaTipos
     if pilaOpr.items != []:
         if pilaOpr.peek() == '+' or pilaOpr.peek() == '-':
             rOpd = pilaOpd.pop()
@@ -846,8 +864,8 @@ def p_mexp(p):
             operator = pilaOpr.pop()
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
-                tablaTemporales[temporayNumDirections] = avail.next()
                 temporayNumDirections = temporayNumDirections + 1
+                tablaTemporales[temporayNumDirections] = avail.next()
                 pilaQuads.generate(operator, lOpd, rOpd, temporayNumDirections)
                 pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
@@ -882,14 +900,16 @@ def p_termino(p):
     if pilaOpr.items != []:
         if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
             rOpd = pilaOpd.pop()
+            print("Operador derecho: {}".format(rOpd))
             rType = pilaTipos.pop()
             lOpd = pilaOpd.pop()
+            print("Operador izquierdo: {}".format(lOpd))
             lType = pilaTipos.pop()
             operator = pilaOpr.pop()
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
-                tablaTemporales[temporayNumDirections] = avail.next()
                 temporayNumDirections = temporayNumDirections + 1
+                tablaTemporales[temporayNumDirections] = avail.next()
                 pilaQuads.generate(operator, lOpd, rOpd, temporayNumDirections)
                 pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
@@ -940,6 +960,8 @@ def p_factor(p):
             pilaTipos.push(p[1][0])
             #print("Haciendo una llamada")
             # TO-DO: handle when a 'llamada' es registrada'''
+        #else:
+
     else:
         #cuando se encuentra un parentesis
         p[0] = p[2]
@@ -951,7 +973,15 @@ def p_variable(p):
     'variable : ID dimension'
     # varTuple -> (vartype, varname, value, memDir)
     varTuple = searchVar(p[1])
-    p[0] = varTuple
+    if varTuple == None:
+        tempVar = getKeysByValue(tablaTemporales,p[1])
+        if tempVar == None:
+            print("Variable not found {}".format(p[1]))
+            exit()
+        else:
+            p[0] = ('int', p[1], None, tempVar[1])
+    else:
+        p[0] = varTuple
 
 #### DIMENSION
 
@@ -966,6 +996,32 @@ def p_varcte(p):
                 | CTEF
                 | CTEC '''
     p[0] = p[1]
+
+'''def p_mergetables(p):
+    'mergetables : empty'
+    global tablaConstantes, tablaTemporalesBool, tablaTemporales
+    dicc = {}
+    funcTableVars = exportVars()
+    #diccList = [tablaConstantes, tablaTemporales, tablaTemporalesBool, tablaTemporalesPointer]
+    dicc.update(tablaConstantes)
+    dicc.update(tablaTemporales)
+    dicc.update(tablaTemporalesBool)
+    dicc.update(funcTableVars)
+    
+    dicckeys = dicc.keys()
+    values = dicc.values()
+    array = []
+    for i in dicckeys:
+        array.append(str(i))
+
+    del dicckeys
+    del dicc
+
+    dicc = dict(zip(array, values))
+    del array
+    del values
+    runcode(dicc)'''
+
 
 def p_showstacks(p):
     'showstacks : empty'

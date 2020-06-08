@@ -1,0 +1,94 @@
+ S -> PROGRAMA ID SEMICOLON vars func_declarations main
+
+ vars -> VAR var_declarations
+
+ vars_declarations -> var_decl var_declarations | var_decl
+
+ var_decl -> tipo lista_ids SEMICOLON
+
+ lista_ids -> lista_ids COMMA var_declar | var_declar
+
+ var_declar -> ID | ID LBRACKET CTEI RBRACKET | ID LBRACKET exp RBRACKET
+
+ tipo -> INT | FLOAT | CHAR
+
+ func_declarations -> func_decl func_declarations | empty
+
+ func_decl ->   FUNCION func2 func3 LPAREN params RPAREN vars bloque 
+            |   FUNCION func2 func3 LPAREN RPAREN vars bloque 
+            |   FUNCION func2 func3 LPAREN params RPAREN bloque 
+            |   FUNCION func2 func3 LPAREN RPAREN bloque 
+
+func2 -> tipo | VOID
+
+func3 -> ID
+
+bloque -> LCURLY blq RCURLY
+
+blq -> estatuto blq | empty
+
+estatuto -> asig | cond | retorno | lectura | escritura | llamada SEMICOLON | repeticion
+
+asig -> variable EQUAL exp SEMICOLON
+
+main -> PRINCIPAL LPAREN RPAREN bloque
+
+param_decl -> tipo ID
+
+params -> params COMMA param_decl | param_decl
+
+regresa -> REGRESA LPAREN exp RPAREN SEMICOLON
+
+llamada -> ID LPAREN llam RPAREN SEMICOLON
+
+llam -> exp COMMA llam | exp
+
+lectura -> LEE LPAREN variable RPAREN SEMICOLON
+
+escritura -> ESCRIBE LPAREN escri RPAREN SEMICOLON
+
+escr -> CTES | exp
+
+escri -> escr COMMA escri | escr
+
+cond -> SI LPAREN exp RPAREN ENTONCES bloque elsePart 
+
+elsePart -> SINO bloque 
+
+repeticion -> condicional | nocondicional
+
+condicional -> MIENTRAS LPAREN exp RPAREN HAZ bloque
+
+nocondicional -> DESDE ID EQUAL CTEI HASTA CTEI HACER bloque
+
+exp -> texp exp1
+
+exp1 -> OR texp exp1 | empty
+
+texp -> gexp texp1
+
+texp1 -> AND gexp texp1
+
+gexp -> mexp gexp1
+
+gexp1 -> gexp2 mexp gexp1 | empty
+
+gexp2 -> LESS | LESSO | GREATER | GREATERO | NOTEQUAL | EQUALS
+
+mexp -> termino mexp1
+
+mexp1 -> mexp2 termino mexp1
+
+mexp2 -> PLUS | MINUS
+
+termino -> factor termino1
+
+termino1 -> TIMES factor termino1 | DIVIDE factor termino1 | empty
+
+factor -> LPAREN exp RPAREN | varcte | variable | llamada
+
+variable -> ID dimension
+
+dimension -> LBRACKET exp RBRACKET
+
+varcte -> CTEI | CTEF | CTEC
