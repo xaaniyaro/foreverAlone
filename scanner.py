@@ -59,6 +59,16 @@ class funcion:
         # Restar la direccion inicial para obtener el numero de variables temporales creadas
         return len(self.vars) + (int(temporayNumDirections) - 13000)  
 
+def addFunc(fname, ftype, fparams, fvars, fpos):
+    global funcCounter, tablaFunciones, secondaryDirections
+    newfunc = funcion(fname, ftype, fparams, fvars, fpos)
+    tablaFunciones[funcCounter] = newfunc
+    funcCounter = funcCounter + 1
+    secondaryDirections = 8000  
+    if ftype != 'void':
+        registerReturnFunc(fname, ftype)
+
+
 #returns if a function exists or not
 def searchFunc(funcName):
     global funcCounter, tablaFunciones
@@ -145,10 +155,16 @@ def registerReturnFunc(funcId, funcT):
     global tablaFunciones, mainDirections
     vartype = None
     dicc = tablaFunciones[1].vars
-    content = dicc[funcT]
-    newVar = (funcId, None, mainDirections)
-    content.append(newVar)
-    tablaFunciones[1].vars[funcT] = content
+    if funcT in dicc:
+        content = dicc[funcT]
+        newVar = (funcId, None, mainDirections)
+        content.append(newVar)
+        tablaFunciones[1].vars[funcT] = content
+    else: 
+        newVar = (funcId, None, mainDirections)
+        dicc[funcT] = []
+        dicc[funcT].append(newVar)
+        tablaFunciones[1].vars[funcT] = dicc
     mainDirections += 1
 
 def resetDirTemp():
@@ -357,28 +373,19 @@ def p_tipo(p):
 ##### FUNC
 
 def p_func_declarations(p):
-    '''func_declarations : func_decl func_declarations
+    '''func_declarations : func_decl funcBody func_declarations
                         | empty'''
-    global funcCounter, tablaFunciones, secondaryDirections, startFunc
-    # nombre, tipo, params, vars, sizeofparms, position
-    if p[1] != None:
-        newfunc = funcion(p[1][0], p[1][1],p[1][2],p[1][3], startFunc)
-        tablaFunciones[funcCounter] = newfunc
-        funcCounter = funcCounter + 1
-        secondaryDirections = 8000  
-        if p[1][1] != 'void':
-            registerReturnFunc(p[1][0], p[1][1])
 
 def p_func_decl(p):
-    '''func_decl : FUNCION func2 func3 LPAREN params RPAREN vars bloque endFunc
-                 | FUNCION func2 func3 LPAREN RPAREN vars bloque endFunc
-                 | FUNCION func2 func3 LPAREN params RPAREN bloque endFunc
-                 | FUNCION func2 func3 LPAREN RPAREN bloque endFunc'''
-    global secondaryDirections
+    '''func_decl : FUNCION func2 func3 LPAREN params RPAREN vars
+                 | FUNCION func2 func3 LPAREN RPAREN vars
+                 | FUNCION func2 func3 LPAREN params RPAREN 
+                 | FUNCION func2 func3 LPAREN RPAREN'''
+    global secondaryDirections, startFunc
     if bool(checkDuplicateFuncs(p[3])):
         exit()
     else:
-        if len(p) > 9:
+        if len(p) > 7:
             dicc = {}
             updateList = []
             for i in p[7]: #extracting vars, es un array de tuplas
@@ -390,32 +397,40 @@ def p_func_decl(p):
                     if key == currType:
                         dicc[key].append((currID, None, secondaryDirections)) 
                 updateList.append(currType)
-            #nombre, tipo, params, vars
-            p[0] = (p[3], p[2], updateList, dicc)
-        elif len(p) > 8:
+            # nombre, tipo, params, vars, sizeofparms, position
+            addFunc(p[3], p[2], updateList, dicc, startFunc)
+        elif len(p) > 6:
             #print(p[4],p[5],p[6],p[7])
+            #when no vars but params
             if p[5] != ')':
                 dicc = {}
-                dicc['int'] = []
+                #dicc['int'] = []
                 updateList = []
                 for i in p[5]:
                     #print(i)
                     currID = i[1]
                     currType = i[0]
-                    for key in dicc:
-                        if key == currType:
-                            dicc[key].append((currID, None, secondaryDirections)) 
+                    if currType in dicc:
+                        dicc[currType].append((currID, None, secondaryDirections))
+                    else:
+                        dicc[currType] = []
+                        dicc[currType].append((currID, None, secondaryDirections))
+                    
+                    secondaryDirections += 1
                     updateList.append(currType)
-                p[0] = (p[3], p[2], updateList, dicc)
+                addFunc(p[3], p[2], updateList, dicc, startFunc)
+            #when no params but vars
             elif p[6] != ')':
                 dicc = {}
                 for i in p[6]: #extracting vars, es un array de tuplas
                     dicc[i[0]] = i[1]
-                p[0] = (p[3], p[2], [], dicc)
+                addFunc(p[3], p[2], [], dicc, startFunc)
         else:
-             p[0] = (p[3], p[2], [], {})
+            #when no params and no vars
+            addFunc(p[3], p[2], {}, [], startFunc)
             
-
+def p_funcBody(p):
+    'funcBody : bloque endFunc'
 
 def p_func3(p):
     'func3 : ID'

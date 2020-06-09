@@ -3,11 +3,10 @@ var
     int num;
 
 funcion int factorial (int n)
+var 
+    int hola;
     {
-        si(n > 1) entonces
-        {regresa (n * factorial(n-1));}
-        sino
-        {regresa (1);}
+
     }
 
 principal ( ) 

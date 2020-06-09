@@ -1,4 +1,5 @@
-GOTO None None 2
+GOTO None None 3
+ENDFUNC None None None
 PRINT None None 12000
 INPUT None None 5000
 PRINT None None 5000
