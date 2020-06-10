@@ -1,17 +1,15 @@
 programa factorial;
-var 
-    int num;
+var
+    int fact;
 
-funcion int factorial (int n)
-var 
-    int hola;
+funcion void calculate()
     {
-
+        desde i = 1 hasta 9 hacer
+        {fact = fact * i;}
     }
 
-principal ( ) 
-{ 
-   escribe("INTRODUCE UN NUMERO:");
-   lee(num);
-   escribe("EL RESULTADO ES:", num);
-} 
+principal (){
+    fact = 1;
+    calculate();
+    escribe(fact);
+}

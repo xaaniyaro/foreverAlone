@@ -9,7 +9,7 @@
 #se deben combinar todas las tablas generadas en el parser
 
 #dicc = {'5000': 'fact', '12000': 1, '12001': 9, '13000': 'i', '13001': 't2', '13002': 't3','14000': 't1'}
-#dicc = {5000: 'fact', 12000: 1, 12001: 9, 13000: 'i', 13001: 't2', 13002: 't3',14000: 't1'}
+#dicc = {5000: 'fact', 12000: 1, 12001: 9, 13000: 'i', 13001: 't2', 13002: 't3', 14000: 't1'}
 
 def runcode(dicc):
     #Leyendo archivo y guardando en una lista de listas
