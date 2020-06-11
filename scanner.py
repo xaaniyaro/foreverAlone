@@ -509,7 +509,7 @@ def p_addVar(p):
     currVar = p[-1]
     #print(currVar)
     #print(currVar)
-    #print("Agregando una asignacion {}".format(currVar))
+    print("Agregando una asignacion {}".format(currVar))
     pilaOpd.push(currVar[3])
     pilaTipos.push(currVar[0])
 
@@ -720,6 +720,7 @@ def p_repeticion(p):
     '''repeticion : condicional
                 | nocondicional'''
 
+
 ###### CONDICIONAL
 
 def p_condicional(p):
@@ -760,7 +761,7 @@ def p_createFor(p):
     'createFor : '
     global temporayNumDirections, tablaTemporales, tablaConstantes, cteDirections
     global temporayBoolDirections, pilaSaltos
-
+    print("Makin a for")
     #vartuple = searchVar(p[-5])
     basevar = addToTable('num', p[-5])
     varEnd = addToTable('ctes', p[-3])
@@ -785,8 +786,8 @@ def p_endFor(p):
     #print("Imprimiendo direccion de 1: {}".format(onedir))
     temporayNumDirections += 1
     tablaTemporales[temporayNumDirections] = avail.next()
-    pilaQuads.generate('+', vardir, onedir[1], temporayNumDirections)
-    pilaQuads.generate('=', temporayNumDirections, None, vardir)
+    pilaQuads.generate('+', vardir-1, onedir[1], temporayNumDirections)
+    pilaQuads.generate('=', temporayNumDirections, None, vardir-1)
     
 
 
@@ -854,9 +855,8 @@ def p_texp(p):
             if(resultType != 'err'):
                 tablaTemporalesBool[temporayBoolDirections] = avail.next()
                 pilaQuads.generate(operator, lOpd, rOpd, temporayBoolDirections)
-                temporayBoolDirections = temporayBoolDirections + 1
                 pilaOpd.push(temporayBoolDirections)
-                
+                temporayBoolDirections = temporayBoolDirections + 1
                 pilaTipos.push(resultType)
                 '''if lOpd > 13999 and lOpd < 14999:
                     tablaTemporalesBool.pop(lOpd)
@@ -891,9 +891,9 @@ def p_gexp(p):
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
                 tablaTemporalesBool[temporayBoolDirections] = avail.next()
-                temporayBoolDirections = temporayBoolDirections + 1
                 pilaQuads.generate(operator, lOpd, rOpd, temporayBoolDirections)
                 pilaOpd.push(temporayBoolDirections)
+                temporayBoolDirections = temporayBoolDirections + 1
                 pilaTipos.push(resultType)
                 '''if lOpd > 13999 and lOpd < 14999:
                     tablaTemporalesBool.pop(lOpd)
@@ -940,7 +940,6 @@ def p_mexp(p):
                 pilaQuads.generate(operator, lOpd, rOpd, temporayNumDirections)
                 pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
-                
                 '''if lOpd > 12999 and lOpd < 13999:
                     tablaTemporales.pop(lOpd)
                     temporayNumDirections =- 1
@@ -972,7 +971,7 @@ def p_termino(p):
     if pilaOpr.items != []:
         if pilaOpr.peek() == '*' or pilaOpr.peek() == '/':
             rOpd = pilaOpd.pop()
-            print("Operador derecho: {}".format(rOpd))
+            #print("Operador derecho: {}".format(rOpd))
             rType = pilaTipos.pop()
             lOpd = pilaOpd.pop()
             #print("Operador izquierdo: {}".format(lOpd))
@@ -1040,8 +1039,23 @@ def p_factor(p):
 ###### VARIABLE
 
 def p_variable(p):
-    '''variable : ID
-                | ID dimension'''
+    'variable : ID'
+    # varTuple -> (vartype, varname, value, memDir)
+    varTuple = searchVar(p[1])
+    #print(p[1])
+    if varTuple == None:
+        tempVar = getKeysByValue(tablaTemporales,p[1])
+        if tempVar == None:
+            print("Variable not found {}".format(p[1]))
+            exit()
+        else:
+            p[0] = ('int', p[1], None, tempVar[1])
+    else:
+        p[0] = varTuple
+
+'''def p_variable(p):
+    variable : ID
+                | ID dimension
     # varTuple -> (vartype, varname, size, memDir)
     global pilaQuads, temporayNumDirections, temporaryPointer, tablaTemporales
     if len(p) > 2:
@@ -1071,15 +1085,15 @@ def p_variable(p):
             else:
                 p[0] = ('int', p[1], None, tempVar[1])
         else:
-            p[0] = varTuple
+            p[0] = varTuple'''
         
 
 #### DIMENSION
 
-def p_dimension(p):
-    '''dimension : LBRACKET exp RBRACKET'''
-    global pilaOpd
-    p[0] = pilaOpd.pop()
+#def p_dimension(p):
+    #'''dimension : LBRACKET exp RBRACKET'''
+    #global pilaOpd
+    #p[0] = pilaOpd.pop()
 
 ##### VARCTE
 
