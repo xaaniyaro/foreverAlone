@@ -1,3 +1,5 @@
 main
-5000 fact
-calculate
+5000 t
+5001 factorial
+factorial
+8000 n

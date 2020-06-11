@@ -34,7 +34,7 @@ def isint(x):
 
 def readquadfile():
     global quads
-    f = open("correct.txt", "r")
+    f = open("output.txt", "r")
     for x in f:
         splitted = x.split()
         quads.append(splitted)
@@ -116,6 +116,7 @@ def runcode():
     readctes()
     #print(temp)
     dicc = temp['main']
+    currF = ""
     i = 0
     regresa = 0
     while(1):
@@ -164,13 +165,16 @@ def runcode():
             dicc = temp['main']
             #print("El contador ahora vale {}".format(i))
         elif quads[i][0] == 'ERA':
-            print(temp)
-            toupdate = temp[quads[i][3]]
-            for j in dicc:
-                if j in toupdate:
-                    toupdate[j] = dicc[j]
-            dicc = toupdate
+            currF = quads[i][3]
             #print("Se requieren {} espacios de memoria".format(len(dicc)-1))
+        elif quads[i][0] == 'PARAM':
+            value = dicc[quads[i][1]]
+            word = quads[i][3]
+            filtered = re.findall('\d+', word)
+            for j in filtered:
+                direction = str(int(j) + 7999)
+            if direction in temp[currF]:
+                temp[currF][direction] = value
         elif quads[i][0] == 'GOTO':
             #print("Llendo al cuadruplo {}".format(int(quads[i][3])))
             i = int(quads[i][3]) - 1
@@ -190,6 +194,12 @@ def runcode():
             else:
                 print("se sigue el curso")
         elif quads[i][0] == 'GOSUB':
+            print(temp)
+            toupdate = temp[quads[i][1]]
+            for j in dicc:
+                if j in toupdate:
+                    toupdate[j] = dicc[j]
+            dicc = toupdate
             #print("Llendo al cuadruplo {}".format(int(quads[i][3])))
             regresa = i
             #print("Se tiene que regresar al cuadruplo {}".format(regresa))

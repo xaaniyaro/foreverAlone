@@ -6,7 +6,7 @@ ERA None None factorial
 PARAM 13000 None par1
 GOSUB factorial None 2
 = 5001 None 13001
-* 13001 5001 13002
+* 13001 8000 13002
 RETURN None None 13002
 GOTO None None 13
 RETURN None None 12000
