@@ -8,13 +8,14 @@ import stack
 import interpreter
 import tNames
 import quadruple
-from vm import runcode
+#from vm import runcode
 
 # Modulo del parser, incluye todas las funciones necesarias para buscar, identificar y registrar variables y funciones
 # Parsea el programa que se le provea de input
 # Escribe un archivo con los cuadruplos resultantes
 # No funciona correctamente aun, existe un problema con los cuadruplos de asignacion y la pila de saltos no registra correctamente
 
+strucTemp = {}
 tablaFunciones = {}
 tablaConstantes = {}
 tablaTemporales = {}
@@ -141,14 +142,14 @@ def searchVar(valueToFind):
                 vartype = item[0]
                 for element in item[1]:
                     if element[0] == valueToFind:
-                        #type, id, value, memDir 
+                        #type, id, size, memDir 
                         return (vartype, element[0],element[1], element[2])
     listOfItems = tablaFunciones[1].vars.items()
     for item in listOfItems:
         vartype = item[0]
         for element in item[1]:
             if element[0] == valueToFind:
-                #type, id, value, memDir 
+                #type, id, size, memDir 
                 return (vartype, element[0],element[1], element[2])
     return None
 
@@ -169,13 +170,20 @@ def registerReturnFunc(funcId, funcT):
     mainDirections += 1
 
 def resetDirTemp():
-    global temporayBoolDirections, temporayNumDirections, temporaryPointer
+    global temporayBoolDirections, temporayNumDirections, temporaryPointer, strucTemp, currF
+    global tablaTemporales, tablaTemporalesBool, tablaTemporalesPointer
+    concentrado = {}
+    concentrado.update(tablaTemporales)
+    concentrado.update(tablaTemporalesBool)
+    concentrado.update(tablaTemporalesPointer)
+    strucTemp[currF] = concentrado
     tablaTemporales = {}
     tablaTemporalesBool = {}
     tablaTemporalesPointer = {}
     temporayNumDirections = 13000
     temporayBoolDirections = 14000
     temporaryPointer = 21000
+    avail.reset()
 
 def getKeysByValue(dictOfElements, valueToFind):
     listOfItems = dictOfElements.items()
@@ -188,13 +196,22 @@ def exportVars():
     global funcCounter, tablaFunciones
     newDicc = {}
     
+    f= open("vars.txt","w+")
     for i in range(1,funcCounter):
-        curr = tablaFunciones[i].vars
-        for key in curr:
-            currList = curr[key]
-            for elem in currList:
-                newDicc[elem[2]] = elem[0]
-    return newDicc
+        f.write('{}\n'.format(tablaFunciones[i].name))
+        curr = tablaFunciones[i].vars.items()
+        for j in curr:
+            for k in j[1]:
+                f.write('{} {}\n'.format(k[2], k[0]))
+    f.close()
+
+def exportCtes():
+    f = open("ctes.txt","w+")
+    global tablaConstantes
+    f= open("ctes.txt","w+")
+    for i in tablaConstantes:
+        f.write('{} {}\n'.format(i, tablaConstantes[i]))
+    f.close()
 
 def addToTable(tableName, varvalue):
     global tablaFunciones, tablaConstantes, tablaTemporales
@@ -205,9 +222,10 @@ def addToTable(tableName, varvalue):
         ver = getKeysByValue(tablaConstantes, varvalue)
         if ver != None:
             if ver[0] == True:
-                #print("Variable ya existe")
+                print("Variable ya existe")
                 return ver[1] #regresa la dirV de la variable
         else:
+            print("Agregando a tabla")
             tablaConstantes[cteDirections] = varvalue
             cteDirections += 1
             return cteDirections - 1
@@ -234,7 +252,14 @@ def addToTable(tableName, varvalue):
             temporayBoolDirections += 1
             return temporayBoolDirections - 1
 
-
+def writeTemps():
+    global strucTemp
+    f= open("temps.txt","w+")
+    for i in strucTemp:
+        f.write('{}\n'.format(i))
+        f.write('{}\n'.format(strucTemp[i]))
+    f.close()
+    #f = open("")
     
 ##################### Parsing rules
 
@@ -310,6 +335,7 @@ def p_var1(p):
     p[0] = (p[1], p[2])
 
 
+
 def p_var2(p):
     '''var2 : var1 var2
             | var1'''
@@ -337,14 +363,14 @@ def p_var_decl(p):
     else:
         if funcCounter == 1:
             if isinstance(p[3], int):
-                p[0] = (p[1], None, mainDirections)
+                p[0] = (p[1], p[3], mainDirections)
                 mainDirections += p[3]
             else:
                 print("LIST SIZE ERROR")
                 exit()
         else:
             if isinstance(p[3], int):
-                p[0] = (p[1], None, secondaryDirections)
+                p[0] = (p[1], p[3], secondaryDirections)
                 secondaryDirections += p[3]
             else:
                 print("LIST SIZE ERROR")
@@ -828,8 +854,9 @@ def p_texp(p):
             if(resultType != 'err'):
                 tablaTemporalesBool[temporayBoolDirections] = avail.next()
                 pilaQuads.generate(operator, lOpd, rOpd, temporayBoolDirections)
-                pilaOpd.push(temporayBoolDirections)
                 temporayBoolDirections = temporayBoolDirections + 1
+                pilaOpd.push(temporayBoolDirections)
+                
                 pilaTipos.push(resultType)
                 '''if lOpd > 13999 and lOpd < 14999:
                     tablaTemporalesBool.pop(lOpd)
@@ -864,9 +891,9 @@ def p_gexp(p):
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
                 tablaTemporalesBool[temporayBoolDirections] = avail.next()
+                temporayBoolDirections = temporayBoolDirections + 1
                 pilaQuads.generate(operator, lOpd, rOpd, temporayBoolDirections)
                 pilaOpd.push(temporayBoolDirections)
-                temporayBoolDirections = temporayBoolDirections + 1
                 pilaTipos.push(resultType)
                 '''if lOpd > 13999 and lOpd < 14999:
                     tablaTemporalesBool.pop(lOpd)
@@ -909,10 +936,11 @@ def p_mexp(p):
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
                 tablaTemporales[temporayNumDirections] = avail.next()
+                temporayNumDirections = temporayNumDirections + 1
                 pilaQuads.generate(operator, lOpd, rOpd, temporayNumDirections)
                 pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
-                temporayNumDirections = temporayNumDirections + 1
+                
                 '''if lOpd > 12999 and lOpd < 13999:
                     tablaTemporales.pop(lOpd)
                     temporayNumDirections =- 1
@@ -953,10 +981,10 @@ def p_termino(p):
             resultType = interpreter.operations[operator][(lType,rType)]
             if(resultType != 'err'):
                 tablaTemporales[temporayNumDirections] = avail.next()
+                temporayNumDirections = temporayNumDirections + 1
                 pilaQuads.generate(operator, lOpd, rOpd, temporayNumDirections)
                 pilaOpd.push(temporayNumDirections)
                 pilaTipos.push(resultType)
-                temporayNumDirections = temporayNumDirections + 1
                 '''if lOpd > 12999 and lOpd < 13999:
                     tablaTemporales.pop(lOpd)
                     temporayNumDirections =- 1
@@ -1012,28 +1040,46 @@ def p_factor(p):
 ###### VARIABLE
 
 def p_variable(p):
-    'variable : ID dimension'
-    # varTuple -> (vartype, varname, value, memDir)
-    varTuple = searchVar(p[1])
-    print(p[1])
-    if varTuple == None:
-        tempVar = getKeysByValue(tablaTemporales,p[1])
-        if tempVar == None:
-            print("Variable not found {}".format(p[1]))
-            exit()
-        else:
-            p[0] = ('int', p[1], None, tempVar[1])
+    '''variable : ID
+                | ID dimension'''
+    # varTuple -> (vartype, varname, size, memDir)
+    global pilaQuads, temporayNumDirections, temporaryPointer, tablaTemporales
+    if len(p) > 2:
+        varTuple = searchVar(p[1])
+        #print(varTuple)
+        onedir = addToTable('ctes', 1)
+        secondir = addToTable('ctes', varTuple[2],)
+        currsize = addToTable('ctes',p[2])
+        pilaQuads.generate('VER', currsize, onedir, secondir)
+        pilaQuads.generate('-', currsize, onedir, temporayNumDirections)
+        tablaTemporales[temporayNumDirections] = avail.next()
+        startdir = addToTable('ctes', varTuple[3])
+        pilaQuads.generate('+', temporayNumDirections, startdir, temporaryPointer)
+        tablaTemporalesPointer[temporaryPointer] = avail.next()
+        temporaryPointer += 1
+        temporayNumDirections += 1
+        p[0] = (varTuple[0], varTuple[1], varTuple[2], temporaryPointer-1)
+
     else:
-        p[0] = varTuple
+        varTuple = searchVar(p[1])
+        #print(p[1])
+        if varTuple == None:
+            tempVar = getKeysByValue(tablaTemporales,p[1])
+            if tempVar == None:
+                print("Variable not found {}".format(p[1]))
+                exit()
+            else:
+                p[0] = ('int', p[1], None, tempVar[1])
+        else:
+            p[0] = varTuple
+        
 
 #### DIMENSION
 
 def p_dimension(p):
-    '''dimension : LBRACKET exp RBRACKET
-                | empty'''
-    global pilaOpd 
-    #if not pilaOpd.is_empty():
-    #    p[0] = pilaOpd.pop()
+    '''dimension : LBRACKET exp RBRACKET'''
+    global pilaOpd
+    p[0] = pilaOpd.pop()
 
 ##### VARCTE
 
@@ -1045,22 +1091,13 @@ def p_varcte(p):
 
 def p_mergetables(p):
     'mergetables : empty'
-    global tablaConstantes, tablaTemporalesBool, tablaTemporales
-    funcTableVars = exportVars()
-    #print(tablaConstantes)
-    #print(tablaTemporales)
-    #print(tablaTemporalesBool)
-    #print(funcTableVars)
-    #print(tablaTemporalesPointer)
-    dicc = {}
+    exportVars()
+    resetDirTemp()
+    #print("Dicc de variables {}".format(exporta))
+    writeTemps()
+    exportCtes()
     
-    #diccList = [tablaConstantes, tablaTemporales, tablaTemporalesBool, tablaTemporalesPointer]
-    dicc.update(tablaConstantes)
-    dicc.update(tablaTemporales)
-    dicc.update(tablaTemporalesBool)
-    dicc.update(funcTableVars)
-    
-    dicckeys = dicc.keys()
+    '''dicckeys = dicc.keys()
     values = dicc.values()
     array = []
     for i in dicckeys:
@@ -1072,8 +1109,8 @@ def p_mergetables(p):
     dicc = dict(zip(array, values))
     print(dicc)
     del array
-    del values
-    runcode(dicc)
+    del values'''
+    #runcode(dicc)
 
 
 def p_showstacks(p):

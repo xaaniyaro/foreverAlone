@@ -9,6 +9,6 @@ GOTOV 14000 None 10
 GOTO None None 3
 ENDFUNC None None None
 = 12000 None 5000
-ERA None None 5
+ERA None None calculate
 GOSUB None None 2
 PRINT None None 5000
